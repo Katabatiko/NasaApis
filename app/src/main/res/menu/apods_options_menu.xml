@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/masApodsFragment"
+        android:title="@string/descargar_mas_imagenes" />
+    <item
+        android:id="@+id/randomApods"
+        android:title="@string/descarga_aleatoira" />
+    <item
+        android:id="@+id/bump_data"
+        android:title="@string/dump_data_apods" />
+    <item
+        android:id="@+id/load_data"
+        android:title="@string/load_data_apods" />
+</menu>

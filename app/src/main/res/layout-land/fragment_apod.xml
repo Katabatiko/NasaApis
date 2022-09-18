@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="domainApod"
+            type="com.gonpas.nasaapis.domain.DomainApod" />
+        <variable
+            name="viewModel"
+            type="com.gonpas.nasaapis.ui.todayApod.TodayApodViewModel" />
+    </data>
+<!-- style="@android:style/Theme.Holo.NoActionBar.Fullscreen" -->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#111111"
+        android:fitsSystemWindows="true"
+        android:theme="@style/Theme.Apod.NoActionBar">
+
+        <!--<ImageView
+            android:id="@+id/apod"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:contentDescription="@{ domainApod.title }"
+            app:imageUrl="@{ domainApod.isVideo ? domainApod.url : domainApod.hdurl }" />-->
+        <com.ravikoradiya.zoomableimageview.ZoomableImageView
+            android:id="@+id/apod"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            app:background_color="@color/dark_grey"
+            app:zoomImageUrl="@{ domainApod.isVideo ? domainApod.url : domainApod.hdurl }" />
+
+        <ImageView
+            android:id="@+id/play_icon"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:onClick="@{ () -> viewModel.launchVideo() }"
+            android:visibility="@{ domainApod.isVideo ? View.VISIBLE : View.GONE }"
+            app:srcCompat="@drawable/ic_play_circle_outline_black_48dp" />
+
+    </FrameLayout>
+</layout>

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation"
+    app:startDestination="@id/introFragment">
+
+    <fragment
+        android:id="@+id/introFragment"
+        android:name="com.gonpas.nasaapis.ui.intro.IntroFragment"
+        android:label="@string/app_name"
+        tools:layout="@layout/fragment_intro" >
+        <action
+            android:id="@+id/action_introFragment_to_apodsFragment"
+            app:destination="@id/apodsFragment" />
+        <action
+            android:id="@+id/action_introFragment_to_epicThumsFragment"
+            app:destination="@id/epicThumsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/apodsFragment"
+        android:name="com.gonpas.nasaapis.ui.apods.ApodsFragment"
+        android:label="@string/imagenes"
+        tools:layout="@layout/fragment_apods_viewer">
+        <action
+            android:id="@+id/action_apodsFragment_to_todayApodFragment"
+            app:destination="@id/todayApodFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim" />
+        <action
+            android:id="@+id/action_apodsFragment_to_masApodsFragment"
+            app:destination="@id/masApodsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/todayApodFragment"
+        android:name="com.gonpas.nasaapis.ui.todayApod.TodayApodFragment"
+        android:label="@string/iad"
+        tools:layout="@layout/fragment_apod">
+        <argument
+            android:name="apod"
+            app:argType="com.gonpas.nasaapis.domain.DomainApod" />
+    </fragment>
+    <fragment
+        android:id="@+id/masApodsFragment"
+        android:name="com.gonpas.nasaapis.ui.apods.MasApodsFragment"
+        android:label="@string/descargar_buscar"
+        tools:layout="@layout/fragment_mas_apods">
+        <action
+            android:id="@+id/action_masApodsFragment_to_todayApodFragment"
+            app:destination="@id/todayApodFragment"
+            app:popUpTo="@id/apodsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/epicThumsFragment"
+        android:name="com.gonpas.nasaapis.ui.epic.EpicThumsFragment"
+        android:label="Imagen Policromática de la Tierra"
+        tools:layout="@layout/fragment_epic_thumbs" />
+</navigation>

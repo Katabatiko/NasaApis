@@ -1,0 +1,28 @@
+<resources>
+    <string name="app_name">Nasa Apis</string>
+    <string name="iad">Imagen Astronómica del Día</string>
+
+    <string name="mas">Más</string>
+    <string name="automatico">Automático</string>
+    <string name="continuar">Continuar</string>
+    <string name="finalizar">Finalizar</string>
+    <string name="terminar">Terminar</string>
+
+    <string name="borrar_datos">Borrar datos</string>
+    <string name="seguro_borrar">¿Seguro de borrar todos los datos?</string>
+    <string name="nasa_apis">Nasa Apis</string>
+    <string name="imagen_dia">Imagen del día</string>
+    <string name="imagenes">"Imágenes del Día"</string>
+    <string name="app_title">Servicio Web de la Nasa</string>
+    <string name="del_apod">Borrar imagen</string>
+    <string name="dump_data_apods">Volcar datos a archivo</string>
+    <string name="load_data_apods">Cargar datos desde archivo</string>
+    <string name="buscar_imagen_por_fecha">Buscar imagen por fecha</string>
+    <string name="descargar_mas_imagenes">Descargar más imágenes</string>
+    <string name="descargar_buscar">Descargar o buscar imágenes</string>
+    <string name="imagen_con_zoom">Imagen con zoom</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="no_network">No hay acceso a Internet</string>
+    <string name="descarga_aleatoira">Descarga aleatoira</string>
+</resources>

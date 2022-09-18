@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="domainApod"
+            type="com.gonpas.nasaapis.domain.DomainApod" />
+
+        <variable
+            name="viewModel"
+            type="com.gonpas.nasaapis.ui.todayApod.TodayApodViewModel" />
+
+        <import type="android.view.View" />
+    </data>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/black"
+        android:padding="8dp"
+        android:textAlignment="textEnd"
+        tools:context=".ui.apods.ApodsFragment">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraintLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#111111"
+            android:textAlignment="textEnd">
+
+            <TextView
+                android:id="@+id/pic_title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@{ domainApod.title }"
+                android:textAlignment="center"
+                android:textSize="20sp"
+                android:textStyle="bold|italic"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <!--<ImageView
+                android:id="@+id/apod"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:contentDescription="@{ domainApod.title }"
+                android:minHeight="200dp"
+                app:imageUrl="@{ domainApod.isVideo ? domainApod.url : domainApod.hdurl }"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/pic_title" />-->
+            <com.ravikoradiya.zoomableimageview.ZoomableImageView
+                android:id="@+id/apod"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:minHeight="350dp"
+                android:scaleType="centerCrop"
+                app:background_color="@color/dark_grey"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/pic_title"
+                app:zoomImageUrl="@{ domainApod.isVideo ? domainApod.url : domainApod.hdurl }" />
+
+            <ImageView
+                android:id="@+id/play_icon"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:onClick="@{ () -> viewModel.launchVideo() }"
+                android:visibility="@{ domainApod.isVideo ? View.VISIBLE : View.GONE }"
+                app:layout_constraintBottom_toBottomOf="@+id/apod"
+                app:layout_constraintEnd_toEndOf="@+id/apod"
+                app:layout_constraintStart_toStartOf="@+id/apod"
+                app:layout_constraintTop_toTopOf="@+id/apod"
+                app:srcCompat="@drawable/ic_play_circle_outline_black_48dp" />
+
+            <TextView
+                android:id="@+id/copyright"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:paddingEnd="4dp"
+                android:text="@{ domainApod.copyright }"
+                android:textAlignment="viewEnd"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/apod" />
+
+            <TextView
+                android:id="@+id/explanation"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:padding="4dp"
+                android:text="@{ domainApod.explanation }"
+                android:textAlignment="viewStart"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/copyright" />
+
+            <!--<ImageView
+                    android:id="@+id/status_img"
+                    android:layout_width="400dp"
+                    android:layout_height="400dp"
+                    android:layout_weight="1"
+                    app:nasaApiStatus="@{viewModel.status}" />
+
+                <TextView
+                    android:id="@+id/error_msg"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@{ viewModel.errorMsg }"
+                    android:visibility="gone"
+                    app:statusErrorMsg="@{viewModel.status}" />-->
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+</layout>
