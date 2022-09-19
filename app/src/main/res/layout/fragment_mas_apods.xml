@@ -65,7 +65,7 @@
             app:layout_constraintTop_toBottomOf="@+id/textView2" />
 
         <EditText
-            android:id="@+id/dia"
+            android:id="@+id/day"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -82,11 +82,11 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
             android:text="Mes:"
-            app:layout_constraintStart_toEndOf="@+id/dia"
+            app:layout_constraintStart_toEndOf="@+id/day"
             app:layout_constraintTop_toBottomOf="@+id/textView2" />
 
         <EditText
-            android:id="@+id/mes"
+            android:id="@+id/month"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -103,11 +103,11 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
             android:text="Año:"
-            app:layout_constraintStart_toEndOf="@+id/mes"
+            app:layout_constraintStart_toEndOf="@+id/month"
             app:layout_constraintTop_toBottomOf="@+id/textView2" />
 
         <EditText
-            android:id="@+id/anno"
+            android:id="@+id/year"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -129,7 +129,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.7"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/anno" />
+            app:layout_constraintTop_toBottomOf="@+id/year" />
 
         <View
             android:id="@+id/divider2"

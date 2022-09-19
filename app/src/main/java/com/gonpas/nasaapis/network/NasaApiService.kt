@@ -7,6 +7,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.create
 import retrofit2.http.GET
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 // dirección base a la que se añadirán los endpoint
@@ -76,9 +77,12 @@ interface NasaApiService {
     @GET("apod")
     suspend fun getRandomApods(@Query("count") count: Int = 5, @Query("thumbs") thumbs: Boolean = true, @Query("api_key") api_key: String = API_KEY): List<ApodDto>
 
-    // EPIC: Earth Poluchromatic Imaging Camera
+    // EPIC: Earth Polychromatic Imaging Camera
     @GET("natural")
-    fun getLastNaturalEpic(@Query("api_key") api_key: String = API_KEY): LiveData<List<EpicDTO>>
+    suspend fun getLastNaturalEpic(@Query("api_key") api_key: String = API_KEY): List<EpicDTO>
+
+    @GET("natural/date/{date}")
+    suspend fun getNaturalEpicByDate(@Path("date") date: String, @Query("api_key") api_key: String = API_KEY): List<EpicDTO>
 }
 
 // para inicializar el servicio retrofit. Como consume muchos recursos se inicializa por lazy (sólo cuando se necesita)

@@ -34,9 +34,9 @@ class MasApodsFragment : Fragment() {
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
-        val dia = binding.dia
-        val mes = binding.mes
-        val anno = binding.anno
+        val dia = binding.day
+        val mes = binding.month
+        val anno = binding.year
 
         dia.addTextChangedListener(object : TextWatcher{
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}

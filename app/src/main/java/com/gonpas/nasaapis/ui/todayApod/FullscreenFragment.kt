@@ -10,7 +10,7 @@ import android.view.WindowManager
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import com.gonpas.nasaapis.databinding.FragmentFullscreenBinding
+//import com.gonpas.nasaapis.databinding.FragmentFullscreenBinding
 
 /**
  * An example full-screen fragment that shows and hides the system UI (i.e.
@@ -59,31 +59,31 @@ class FullscreenFragment : Fragment() {
     private var fullscreenContent: View? = null
     private var fullscreenContentControls: View? = null
 
-    private var _binding: FragmentFullscreenBinding? = null
+   // private var _binding: FragmentFullscreenBinding? = null
 
     // This property is only valid between onCreateView and
     // onDestroyView.
-    private val binding get() = _binding!!
+  //  private val binding get() = _binding!!
 
-    override fun onCreateView(
+    /*override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
 
-        _binding = FragmentFullscreenBinding.inflate(inflater, container, false)
-        return binding.root
+      //  _binding = FragmentFullscreenBinding.inflate(inflater, container, false)
+       // return binding.root
 
-    }
+    }*/
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         visible = true
 
-        dummyButton = binding.dummyButton
-        fullscreenContent = binding.fullscreenContent
-        fullscreenContentControls = binding.fullscreenContentControls
+      //  dummyButton = binding.dummyButton
+      //  fullscreenContent = binding.fullscreenContent
+      //  fullscreenContentControls = binding.fullscreenContentControls
         // Set up the user interaction to manually show or hide the system UI.
         fullscreenContent?.setOnClickListener { toggle() }
 
@@ -182,6 +182,6 @@ class FullscreenFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        _binding = null
+        //_binding = null
     }
 }

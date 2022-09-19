@@ -49,11 +49,11 @@ fun bindZoomImage(zoomImage: ZoomableImageView, imgUrl: String){
 }
 
 @BindingAdapter("setThumb")
-fun setThumbnailo(imgView: ImageView, epic: DomainEpic){
+fun setThumbnail(imgView: ImageView, epic: DomainEpic){
     var url = "https://epic.gsfc.nasa.gov/archive/natural/%s/%s/%s/thumbs/%s.jpg"
     val fecha = epic.date.split(" ")[0].split("-")
     val fullUrl = url.format(fecha[0], fecha[1],fecha[2], epic.imageName)
-    // Log.d("xxBu", imgUrl)
+//     Log.d("xxBu", "thumbUrl: $fullUrl")
     fullUrl.let {
         // para convertir la URL en URI
         val imgUri = it.toUri().buildUpon().scheme("https").build()
@@ -67,6 +67,12 @@ fun setThumbnailo(imgView: ImageView, epic: DomainEpic){
             .into(imgView)
     }
 }
+
+/*@BindingAdapter("setdia")
+fun TextView.setDia(date: String){
+    text  = extractedDate(date, "dia")
+
+}*/
 
 @BindingAdapter("dateFormat")
 fun TextView.bindDateFormated(date: String){

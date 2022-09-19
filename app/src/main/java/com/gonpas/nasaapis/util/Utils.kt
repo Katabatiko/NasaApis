@@ -1,5 +1,7 @@
 package com.gonpas.nasaapis.util
 
+import android.util.Log
+
 private val PUNCTUATION = listOf(", ", "; ", ": ", " ")
 
 /**
@@ -30,4 +32,14 @@ fun String.smartTruncate(length: Int): String {
         builder.append("...")
     }
     return builder.toString()
+}
+
+fun extractedDate(date: String, field: String): Int{
+    val extractedDate = date.split(" ")[0].split("-")
+    return when(field){
+        "dia" -> extractedDate[2].toInt()
+        "mes" -> extractedDate[1].toInt()
+        "anno" -> extractedDate[0].toInt()
+        else -> Log.e("xxBu","Campo de fecha erróneo")
+    }
 }

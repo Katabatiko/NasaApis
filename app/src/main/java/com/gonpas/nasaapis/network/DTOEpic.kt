@@ -29,18 +29,12 @@ data class EpicDTO (
     val image: String,
     @Transient
     val version: String = "v1",
-    @Transient
     @Json(name = "centroid_coordinates") val centroidCoordinates: Centroid = Centroid(0f, 0f),
-    @Transient
     @Json(name = "dscovr_j2000_position") val dscovrPosition: J2000 = J2000(0f, 0f, 0f),
-    @Transient
     @Json(name = "lunar_j2000_position") val lunarPosition: J2000 = J2000(0f, 0f, 0f),
-    @Transient
     @Json(name = "sun_j2000_position") val sunPosition: J2000 = J2000(0f, 0f, 0f),
-    @Transient
     @Json(name = "attitude_quaternions") val attitudeQuaternions: Quaternions = Quaternions(0f, 0f, 0f, 0f),
     val date: String,
-    @Transient
     val coords: Coords = Coords(centroidCoordinates, dscovrPosition, lunarPosition, sunPosition,attitudeQuaternions)
 )
 
@@ -67,13 +61,13 @@ data class Quaternions (
 )
 @JsonClass(generateAdapter = true)
 data class Coords (
-    @Json(name = "centroid_coordinates") val centroidCoord: Centroid,
-    @Json(name = "dscovr_j2000_position") val dscovrPos: J2000,
-    @Json(name = "lunar_j2000_position") val lunarPos: J2000,
-    @Json(name = "sun_j2000_position") val sunPos: J2000,
-    @Json(name = "attitude_quaternions") val attitudeQuater: Quaternions
+    @Json(name = "centroid_coordinates") val centroidCoordinates: Centroid,
+    @Json(name = "dscovr_j2000_position") val dscovrPosition: J2000,
+    @Json(name = "lunar_j2000_position") val lunarPosition: J2000,
+    @Json(name = "sun_j2000_position") val sunPosition: J2000,
+    @Json(name = "attitude_quaternions") val attitudeQuaternions: Quaternions
 )
-
+/*
 class EpicAdapter: JsonAdapter<EpicDTO>() {
     @FromJson
     override fun fromJson(reader: JsonReader): EpicDTO {
@@ -101,7 +95,7 @@ class EpicAdapter: JsonAdapter<EpicDTO>() {
     override fun toJson(writer: JsonWriter, value: EpicDTO?) {
         throw UnsupportedOperationException()
     }
-}
+}*/
 
 fun EpicDTO.asDomainEpic(): DomainEpic{
     return DomainEpic(

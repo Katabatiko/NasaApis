@@ -113,13 +113,23 @@ class NasaRepository(private val database: NasaDatabase) {
 /******************************************************************************************************/
 /******************************************************************************************************/
     /** EPIC */
-    fun getLastEpic(): LiveData<List<EpicDTO>>{
-        var lista: LiveData<List<EpicDTO>>
-        //withContext(Dispatchers.IO) {
+    suspend fun getLastEpic(): List<EpicDTO>{
+        var lista: List<EpicDTO>
+        withContext(Dispatchers.IO) {
             lista =  NasaApi.retrofitEpicService.getLastNaturalEpic()
-        //}
-        Log.d("xxNr","Epics recibidos: $lista")
+        Log.d("xxNr","dentro rutina Epics recibidos: $lista")
+        }
+        Log.d("xxNr","fuera rutina Epics recibidos: $lista")
         return lista
     }
+
+    suspend fun getNaturalEpicByDate(date: String): List<EpicDTO>{
+        var lista: List<EpicDTO>
+        withContext(Dispatchers.IO){
+            lista = NasaApi.retrofitEpicService.getNaturalEpicByDate(date)
+            Log.d("xxNr","IN rutina Epics by date recibidos: $lista")
+        }
+        Log.d("xxNr","OUT rutina Epics recibidos: $lista")
+        return lista    }
 }
 

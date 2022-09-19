@@ -99,10 +99,10 @@ class ApodsFragment : Fragment() {
  */
 class ApodViewHolder(val binding: ApodItemBinding): RecyclerView.ViewHolder(binding.root){
 
-    val title = binding.picTitle
+    /*val title = binding.picTitle
     val copyright = binding.copyright
     val date = binding.date
-    val apod = binding.apod
+    val apod = binding.apod*/
 
     companion object{
         fun from(parent: ViewGroup): ApodViewHolder {
