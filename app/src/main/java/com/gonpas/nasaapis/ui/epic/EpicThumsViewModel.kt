@@ -11,6 +11,7 @@ import com.gonpas.nasaapis.domain.DomainEpic
 import com.gonpas.nasaapis.network.asListDomainEpic
 import com.gonpas.nasaapis.network.asLiveDataListDomainEpic
 import com.gonpas.nasaapis.repository.NasaRepository
+import com.gonpas.nasaapis.ui.apods.NasaApiStatus
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.launch
 
@@ -32,24 +33,41 @@ class EpicThumbsViewModel(application: Application) : AndroidViewModel(applicati
     val dia: LiveData<String>
         get() = _dia
 
+    private var _navigateToFullScreenEpic = MutableLiveData<DomainEpic?>()
+    val navigateToFullScreenEpic: LiveData<DomainEpic?>
+        get() = _navigateToFullScreenEpic
+
+
+
+    private val _status = MutableLiveData<NasaApiStatus>()
+    val status: LiveData<NasaApiStatus>
+        get() = _status
+
+    private val _errorMsg = MutableLiveData<String>()
+    val errorMsg: LiveData<String>
+        get() = _errorMsg
+
 
     init {
         getLastEpic()
     }
 
     fun getLastEpic(){
+        _status.value = NasaApiStatus.LOADING
         viewModelScope.launch {
             try {
                 _epics.value = repository.getLastEpic().asListDomainEpic()
-                Log.d("xxEtvm","last _epics size: ${_epics.value?.size}")
+         //       Log.d("xxEtvm","last _epics size: ${_epics.value?.size}")
                 val fecha = _epics.value!![0].date.split(" ")[0].split("-")
-                Log.d("xxEtvm","fecha: $fecha")
+       //         Log.d("xxEtvm","fecha: $fecha")
                 _anno.value = fecha[0]
                 _mes.value = fecha[1]
                 _dia.value = fecha[2]
+                _status.value = NasaApiStatus.DONE
             }catch (ce: CancellationException) {
                 throw ce    // NECESARIO PARA CANCELAR EL SCOPE DE LA RUTINA
             }catch (e: Exception){
+                _status.value = NasaApiStatus.ERROR
                 Log.e("xxEtvm", "Error de red: ${e.message}")
                 Toast.makeText(app, "${ app.getString(R.string.no_network) } \n ${e.message}", Toast.LENGTH_LONG).show()
             }
@@ -71,11 +89,11 @@ class EpicThumbsViewModel(application: Application) : AndroidViewModel(applicati
 
     fun getEpicByDate(){
         val date = "%s-%s-%s".format(anno.value, mes.value, dia.value)
-        Log.d("xxEtvm","fecha formateada: $date")
+       // Log.d("xxEtvm","fecha formateada: $date")
         viewModelScope.launch {
             try {
                 _epics.value = repository.getNaturalEpicByDate(date).asListDomainEpic()
-                Log.d("xxEtvm","by date _epics size: ${_epics.value?.size}")
+     //           Log.d("xxEtvm","by date _epics size: ${_epics.value?.size}")
                 if (!_epics.value.isNullOrEmpty()){
                     val fecha = _epics.value!![0].date.split(" ")[0].split("-")
                     _anno.value = fecha[0]
@@ -93,8 +111,11 @@ class EpicThumbsViewModel(application: Application) : AndroidViewModel(applicati
         }
     }
 
-    fun getEpicsFullImage(){
-
+    fun goFullscreen(epic: DomainEpic){
+        _navigateToFullScreenEpic.value = epic
+    }
+    fun navigated(){
+        _navigateToFullScreenEpic.value = null
     }
 
 }

@@ -68,11 +68,26 @@ fun setThumbnail(imgView: ImageView, epic: DomainEpic){
     }
 }
 
-/*@BindingAdapter("setdia")
-fun TextView.setDia(date: String){
-    text  = extractedDate(date, "dia")
+@BindingAdapter("setBigImage")
+fun setBigImage(imgView: ImageView, epic: DomainEpic){
+    var url = "https://epic.gsfc.nasa.gov/archive/natural/%s/%s/%s/jpg/%s.jpg"
+    val fecha = epic.date.split(" ")[0].split("-")
+    val fullUrl = url.format(fecha[0], fecha[1],fecha[2], epic.imageName)
+//     Log.d("xxBu", "thumbUrl: $fullUrl")
+    fullUrl.let {
+        // para convertir la URL en URI
+        val imgUri = it.toUri().buildUpon().scheme("https").build()
+        // invocar glide para cargar la imagen
+        Glide.with(imgView.context)
+            .load(imgUri)
+            .apply(
+                RequestOptions()
+                    .placeholder(R.drawable.loading_animation)
+                    .error(R.drawable.ic_broken_image))
+            .into(imgView)
+    }
 
-}*/
+}
 
 @BindingAdapter("dateFormat")
 fun TextView.bindDateFormated(date: String){
@@ -80,7 +95,6 @@ fun TextView.bindDateFormated(date: String){
     partes = partes.reversed()
     val template = "%s-%s-%s"
     text = String.format(template, partes[0], partes[1], partes[2])
-
 }
 
 @BindingAdapter("extractTime")

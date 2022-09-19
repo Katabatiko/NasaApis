@@ -60,7 +60,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:minHeight="350dp"
-                android:scaleType="centerCrop"
+                android:scaleType="centerInside"
                 app:background_color="@color/dark_grey"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

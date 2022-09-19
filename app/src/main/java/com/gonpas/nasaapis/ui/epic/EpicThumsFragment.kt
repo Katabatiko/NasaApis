@@ -10,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.gonpas.nasaapis.R
@@ -36,7 +37,7 @@ class EpicThumsFragment : Fragment() {
         binding.lifecycleOwner = this
 
         val adapter = EpicThumbsAdapter(EpicThumbsAdapter.OnClickListener{
-            Log.d("xxEtf","clicked: ${it.imageName}")
+            viewModel.goFullscreen(it)
         })
         binding.epicsThumbs.adapter = adapter
         /*binding.root.findViewById<RecyclerView>(R.id.epics_thumbs).apply {
@@ -51,15 +52,16 @@ class EpicThumsFragment : Fragment() {
 //            Log.d("xxEtf","adapter datos size: ${adapter.datos.size}")
         }
 
-        /*viewModel.anno.observe(viewLifecycleOwner){
-            binding.year.setText(it)
+        viewModel.navigateToFullScreenEpic.observe(viewLifecycleOwner){
+            if (it != null){
+                val imageUrl = "https://epic.gsfc.nasa.gov/archive/natural/%s/%s/%s/png/%s.png"
+                val fecha = it.date.split(" ")[0].split("-")
+                val url = imageUrl.format(fecha[0], fecha[1], fecha[2], it.imageName)
+                findNavController().navigate(EpicThumsFragmentDirections.actionEpicThumsFragmentToEpicFullscreenFragment(url, it.date.split(" ")[1]))
+                viewModel.navigated()
+            }
         }
-        viewModel.mes.observe(viewLifecycleOwner){
-            binding.month.setText(it)
-        }
-        viewModel.dia.observe(viewLifecycleOwner){
-            binding.day.setText(it)
-        }*/
+
 
         binding.year.addTextChangedListener(object : TextWatcher{
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}

@@ -54,5 +54,21 @@
         android:id="@+id/epicThumsFragment"
         android:name="com.gonpas.nasaapis.ui.epic.EpicThumsFragment"
         android:label="Imagen Policromática de la Tierra"
-        tools:layout="@layout/fragment_epic_thumbs" />
+        tools:layout="@layout/fragment_epic_thumbs" >
+        <action
+            android:id="@+id/action_epicThumsFragment_to_epicFullscreenFragment"
+            app:destination="@id/epicFullscreenFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/epicFullscreenFragment"
+        android:name="com.gonpas.nasaapis.ui.epic.EpicFullscreenFragment"
+        android:label="Imágen Epic"
+        tools:layout="@layout/fragment_fullscreen_epic">
+        <argument
+            android:name="epic_url"
+            app:argType="string" />
+        <argument
+            android:name="epic_time"
+            app:argType="string" />
+    </fragment>
 </navigation>
