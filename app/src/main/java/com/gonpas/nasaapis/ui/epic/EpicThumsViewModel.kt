@@ -37,6 +37,9 @@ class EpicThumbsViewModel(application: Application) : AndroidViewModel(applicati
     val navigateToFullScreenEpic: LiveData<DomainEpic?>
         get() = _navigateToFullScreenEpic
 
+    private var _navigateToSliderEpics = MutableLiveData<List<DomainEpic>>()
+    val navigateToSliderEpics: LiveData<List<DomainEpic>>
+        get() = _navigateToSliderEpics
 
 
     private val _status = MutableLiveData<NasaApiStatus>()
@@ -116,6 +119,18 @@ class EpicThumbsViewModel(application: Application) : AndroidViewModel(applicati
     }
     fun navigated(){
         _navigateToFullScreenEpic.value = null
+    }
+
+    fun goSlider(){
+        Log.d("xxEtvm","Go slider")
+        _navigateToSliderEpics.value = _epics.value
+    }
+    fun navigatedToSlider(){
+        _navigateToSliderEpics.value = listOf<DomainEpic>()
+    }
+
+    var btnAnimationEnable = epics.map{
+        it.isNotEmpty()
     }
 
 }

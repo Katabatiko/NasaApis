@@ -16,6 +16,9 @@
         <action
             android:id="@+id/action_introFragment_to_epicThumsFragment"
             app:destination="@id/epicThumsFragment" />
+        <action
+            android:id="@+id/action_introFragment_to_marsRoverPhotosFragment"
+            app:destination="@id/marsRoverPhotosFragment" />
     </fragment>
     <fragment
         android:id="@+id/apodsFragment"
@@ -58,6 +61,9 @@
         <action
             android:id="@+id/action_epicThumsFragment_to_epicFullscreenFragment"
             app:destination="@id/epicFullscreenFragment" />
+        <action
+            android:id="@+id/action_epicThumsFragment_to_epicSliderFragment"
+            app:destination="@id/epicSliderFragment" />
     </fragment>
     <fragment
         android:id="@+id/epicFullscreenFragment"
@@ -70,5 +76,31 @@
         <argument
             android:name="epic_time"
             app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/marsRoverPhotosFragment"
+        android:name="com.gonpas.nasaapis.ui.marsroverphotos.MarsRoverPhotosFragment"
+        android:label="Fotos de los rover en Marte"
+        tools:layout="@layout/fragment_mars_rover_photos" >
+        <action
+            android:id="@+id/action_marsRoverPhotosFragment_to_roverManifestFragment"
+            app:destination="@id/roverManifestFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/roverManifestFragment"
+        android:name="com.gonpas.nasaapis.ui.marsroverphotos.RoverManifestFragment"
+        android:label="Manifiesto del Rover"
+        tools:layout="@layout/rover_manifest" >
+        <argument
+            android:name="rover"
+            app:argType="com.gonpas.nasaapis.domain.DomainRover" />
+    </fragment>
+    <fragment
+        android:id="@+id/epicSliderFragment"
+        android:name="com.gonpas.nasaapis.ui.epic.EpicSliderFragment"
+        android:label="Animación de imágenes" >
+        <argument
+            android:name="epicsList"
+            app:argType="com.gonpas.nasaapis.domain.DomainEpic[]" />
     </fragment>
 </navigation>

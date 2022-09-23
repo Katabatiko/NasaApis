@@ -70,10 +70,10 @@ fun setThumbnail(imgView: ImageView, epic: DomainEpic){
 
 @BindingAdapter("setBigImage")
 fun setBigImage(imgView: ImageView, epic: DomainEpic){
-    var url = "https://epic.gsfc.nasa.gov/archive/natural/%s/%s/%s/jpg/%s.jpg"
+    var url = "https://epic.gsfc.nasa.gov/archive/natural/%s/%s/%s/png/%s.png"
     val fecha = epic.date.split(" ")[0].split("-")
     val fullUrl = url.format(fecha[0], fecha[1],fecha[2], epic.imageName)
-//     Log.d("xxBu", "thumbUrl: $fullUrl")
+     Log.d("xxBu", "bigImage: $fullUrl")
     fullUrl.let {
         // para convertir la URL en URI
         val imgUri = it.toUri().buildUpon().scheme("https").build()
@@ -89,8 +89,19 @@ fun setBigImage(imgView: ImageView, epic: DomainEpic){
 
 }
 
+@BindingAdapter("capitalize")
+fun TextView.capitalize(word: String){
+    text = word.uppercase()
+}
+
+@BindingAdapter("toString")
+fun TextView.intToString(int: Int){
+    text = int.toString()
+}
+
 @BindingAdapter("dateFormat")
 fun TextView.bindDateFormated(date: String){
+    Log.d("xxBu","date received: $date")
     var partes = date.split("-")
     partes = partes.reversed()
     val template = "%s-%s-%s"

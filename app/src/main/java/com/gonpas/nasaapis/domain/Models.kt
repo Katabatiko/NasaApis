@@ -2,6 +2,7 @@ package com.gonpas.nasaapis.domain
 
 import android.os.Parcelable
 import com.gonpas.nasaapis.util.smartTruncate
+import com.squareup.moshi.Json
 import kotlinx.android.parcel.Parcelize
 
 /**
@@ -37,11 +38,17 @@ data class DomainEpic(
     val date: String
 ): Parcelable{
 
-    /*private fun makeUrlHd(): String{
-
-    }*/
 }
 
-
+@Parcelize
+data class DomainRover(
+    val name: String,
+    val landingDate: String,
+    val launchDate: String,
+    val status: String,
+    val maxSol: Int,
+    val maxDate: String,
+    val totalPhotos: Int
+): Parcelable
 
 

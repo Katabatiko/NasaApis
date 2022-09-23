@@ -37,7 +37,7 @@ class MasApodsViewModel(val app: Application) : AndroidViewModel(app) {
         Log.d("xxMavm","Buscar por fecha: ${String.format(fecha, anno.value, mes.value, dia.value)}")
         if (dia.value?.let { Integer.parseInt(it) } in 1..31){
             if (mes.value?.let { Integer.parseInt(it) } in 1..12){
-                if (anno.value?.let { Integer.parseInt(it) } in 1980..2022){
+                if (anno.value?.let { Integer.parseInt(it) } in 1995..2022){
                     Log.d("xxMavm","fecha: ${fecha.format(anno.value, mes.value, dia.value)}")
                     viewModelScope.launch {
                         try {
@@ -66,7 +66,7 @@ class MasApodsViewModel(val app: Application) : AndroidViewModel(app) {
         if(apod != null)
             _apod.value = apod
         else
-            Toast.makeText(getApplication(), "Fecha fuera de rando", Toast.LENGTH_LONG).show()
+            Toast.makeText(getApplication(), "Fecha fuera de rango", Toast.LENGTH_LONG).show()
     }
 
     fun navigated(){

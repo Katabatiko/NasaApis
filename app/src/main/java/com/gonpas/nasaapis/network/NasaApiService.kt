@@ -14,6 +14,29 @@ import retrofit2.http.Query
 private const val API_KEY = "T2KPOpwHM9BcidtrJGbe2GuoFwDU2EMicbV07Dcw"
 private const val APOD_BASE_URL = "https://api.nasa.gov/planetary/"
 private const val EPIC_BASE_URL = "https://api.nasa.gov/EPIC/api/"
+private const val MARS_ROVERS_URL = "https://api.nasa.gov/mars-photos/api/v1/"
+
+/**
+ * Rovers activos sobre Marte
+ */
+private const val PERSEVERANCE = "perseverance"
+private const val CURIOSITY = "curiosity"
+private const val OPPORTUNITY = "opportunity"
+private const val SPIRIT = "spirit"
+
+/**
+ * Cámaras de los rovers
+ * FHAZ, RHAZ, MAST, CHEMCAM, MAHLI, MARDI, NAVCAM, PANCAM, MINITES
+ */
+// cámara del mastil (curiosity)
+private const val MAST = "mast"
+//  cámara con lentes de mano (curiosity)
+private const val MAHLI = "mahli"
+// cámara de navegación (curiosity, pportunity, spirit)
+private const val NAVCAM = "navcam"
+// cámara panorámica (opportunity, spirit)
+private const val PANCAM = "pancam"
+
 
 val lon_navarrevisca = -4.89222
 val lat_navarrevisca = 40.36246
@@ -47,21 +70,13 @@ private val retrofitEpic: Retrofit by lazy {
         .build()
 }
 
-
-/*fun retrofitNaturalThumbFotoBuild(
-    year: String,
-    month: String,
-    day: String,
-    imageType: String,
-    imageName: String
-): Retrofit {
-    val base_url =
-        "https://epic.gsfc.nasa.gov/archive/natural/$year/$month/$day/thumb/$imageName.$imageType"
-    return Retrofit.Builder()
+private val retrofitMarsRovers: Retrofit by lazy {
+    Retrofit.Builder()
         .addConverterFactory(MoshiConverterFactory.create(moshi))
-        .baseUrl(base_url)
+        .baseUrl(MARS_ROVERS_URL)
         .build()
-}*/
+}
+
 
 // la interface define como comunicarse con el web service
 interface NasaApiService {
@@ -83,6 +98,15 @@ interface NasaApiService {
 
     @GET("natural/date/{date}")
     suspend fun getNaturalEpicByDate(@Path("date") date: String, @Query("api_key") api_key: String = API_KEY): List<EpicDTO>
+
+    @GET("rovers/{rover}/photos")
+    suspend fun getRoverPhotos(@Path("rover") rover: String = CURIOSITY, @Query("earth_date") earth_date: String, @Query("api_key") api_key: String = API_KEY): Photos
+
+    @GET("rovers/{rover}/latest_photos")
+    suspend fun getRoverLatestPhotos(@Path("rover") rover: String, @Query("api_key") api_key: String = API_KEY): LatestPhotos
+    
+    @GET("manifests/{rover}")
+    suspend fun getRoverManifest(@Path("rover") rover: String, @Query("api_key") api_key: String = API_KEY): PhotoManifest
 }
 
 // para inicializar el servicio retrofit. Como consume muchos recursos se inicializa por lazy (sólo cuando se necesita)
@@ -93,6 +117,10 @@ object NasaApi {
 
     val retrofitEpicService: NasaApiService by lazy {
         retrofitEpic.create(NasaApiService::class.java)
+    }
+
+    val retrofitMarsRoversService: NasaApiService by lazy {
+        retrofitMarsRovers.create(NasaApiService::class.java)
     }
 
 }

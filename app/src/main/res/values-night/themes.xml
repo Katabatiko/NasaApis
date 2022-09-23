@@ -7,6 +7,9 @@
         <!-- Customize your theme here. -->
         <item name="android:fontFamily">@font/lobster_two</item>
         <item name="fontFamily">@font/lobster_two</item>
+        <item name="android:textColor">#FFFFFF</item>
+        <!--<item name="android:background">#000000</item>
+        <item name="background_color">#000000</item>-->
 
         <!--<item name="android:textColor">#FFFFFF</item>
         <item name="android:textColorHint">#FFFFFF</item>-->
@@ -16,5 +19,14 @@
     <style name="ThemeOverlay.NasaApis.FullscreenContainer" parent="">
         <item name="fullscreenBackgroundColor">@color/light_blue_900</item>
         <item name="fullscreenTextColor">@color/light_blue_A400</item>
+    </style>
+
+    <style name="ButtonStyle"  parent="Widget.MaterialComponents.Button">
+        <item name="backgroundTint">@color/button_background</item>
+        <item name="android:textColor">@color/gris_claro</item>
+        <item name="paddingStart">6dp</item>
+        <item name="android:paddingLeft">6dp</item>
+        <item name="paddingEnd">6dp</item>
+        <item name="android:paddingRight">6dp</item>
     </style>
 </resources>

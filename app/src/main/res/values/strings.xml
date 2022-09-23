@@ -25,4 +25,7 @@
     <string name="dummy_content">DUMMY\nCONTENT</string>
     <string name="no_network">No hay acceso a Internet</string>
     <string name="descarga_aleatoira">Descarga aleatoira</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="imgs_marte">Imágenes de Marte</string>
+    <string name="imgs_tierra">Imágenes de la Tierra</string>
 </resources>

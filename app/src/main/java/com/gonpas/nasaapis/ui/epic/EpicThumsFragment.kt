@@ -62,6 +62,14 @@ class EpicThumsFragment : Fragment() {
             }
         }
 
+        viewModel.navigateToSliderEpics.observe(viewLifecycleOwner){
+            Log.d("xxEtf","Observados cambios en navigate to slider")
+            if(it.isNotEmpty()){
+                findNavController().navigate(EpicThumsFragmentDirections.actionEpicThumsFragmentToEpicSliderFragment(it.toTypedArray()))
+                viewModel.navigatedToSlider()
+            }
+        }
+
 
         binding.year.addTextChangedListener(object : TextWatcher{
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
