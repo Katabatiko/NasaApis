@@ -34,7 +34,7 @@ class EpicSliderFragment : Fragment(), ViewPagerAdapter.ConditionViewPager {
 
         viewPager.adapter = ViewPagerAdapter(imageList, this)
         viewPager.orientation = ViewPager2.ORIENTATION_HORIZONTAL
-        viewPager.offscreenPageLimit = 1
+        viewPager.offscreenPageLimit = 2
         viewPager.setPageTransformer(AlphaPageTransformer())
 
         //
@@ -48,7 +48,7 @@ class EpicSliderFragment : Fragment(), ViewPagerAdapter.ConditionViewPager {
             override fun run() {
                 handler.post(update)
             }
-        }, 1000, 2500)
+        }, 1000, 3000)
 
         return binding.root
     }
