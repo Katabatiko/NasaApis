@@ -19,5 +19,7 @@
   <color name="primaryTextColor">#FFFFFF</color>
   <color name="secondaryTextColor">#FFFFFF</color>
 
+  <color name="button_background">#222222</color>
   <color name="dark_grey">#333333</color>
+  <color name="gris_claro">#DDDDDD</color>
 </resources>

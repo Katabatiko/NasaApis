@@ -3,8 +3,10 @@ package com.gonpas.nasaapis
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.view.GravityCompat
 import androidx.databinding.DataBindingUtil
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.findNavController
@@ -30,6 +32,10 @@ class MainActivity : AppCompatActivity() {
         val binding = DataBindingUtil.setContentView<ActivityMainBinding>(this, R.layout.activity_main)
 
         drawerLayout = binding.drawerLayout
+        Handler().postDelayed({
+            drawerLayout.openDrawer(GravityCompat.START, true)
+        }, 2000)
+
 
         val navController = this.findNavController(R.id.nav_host_fragment)
 

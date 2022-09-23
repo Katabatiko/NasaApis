@@ -8,10 +8,7 @@ import com.gonpas.nasaapis.database.asDomainModel
 import com.gonpas.nasaapis.database.asListDomainModel
 import com.gonpas.nasaapis.domain.DomainApod
 import com.gonpas.nasaapis.domain.DomainEpic
-import com.gonpas.nasaapis.network.EpicDTO
-import com.gonpas.nasaapis.network.NasaApi
-import com.gonpas.nasaapis.network.asDatabaseModel
-import com.gonpas.nasaapis.network.asListDomainEpic
+import com.gonpas.nasaapis.network.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -19,26 +16,9 @@ import kotlinx.coroutines.withContext
 private const val EPIC_FOTO_URL = "https://epic.gsfc.nasa.gov/archive/"
 
 class NasaRepository(private val database: NasaDatabase) {
-
-   // var id: Long = 0L
-
-    //private var _allApods = MutableLiveData<List<DomainApod>>()
-    /*val allApods: LiveData<List<DomainApod>> = Transformations.map(database.nasaDao.getAllApods()) {
-        it.asListDomainModel()
-    }*/
-      //  get() = _allApods
-
-   /* private val _apod = MutableLiveData<DomainApod?>()
-    val apod: MutableLiveData<DomainApod?>
-        get() = _apod*/
-
-
-    /*suspend fun inicializa(){
-            _allApods = database.nasaDao.getAllApods()
-            if (allApods.value.isNotEmpty()) {
-                _apod.value = allApods.value[0].asDomainModel()
-            }
-    }*/
+    /******************************************************************************************************/
+    /******************************************************************************************************/
+    /** APOD */
 
     /**
      * Refresh the videos stored in the offline cache.
@@ -131,5 +111,31 @@ class NasaRepository(private val database: NasaDatabase) {
         }
         Log.d("xxNr","OUT rutina Epics recibidos: $lista")
         return lista    }
+    /******************************************************************************************************/
+    /******************************************************************************************************/
+    /** MARS FOTOS */
+    suspend fun getMarsPhotos(rover: String, date: String): Photos{
+        val fotos: Photos
+        withContext(Dispatchers.IO){
+            fotos =  NasaApi.retrofitMarsRoversService.getRoverPhotos(rover, date)
+        }
+        return fotos
+    }
+
+    suspend fun getLatestMarsRoversPhotos(rover: String): LatestPhotos{
+        val fotos: LatestPhotos
+        withContext(Dispatchers.IO){
+            fotos = NasaApi.retrofitMarsRoversService.getRoverLatestPhotos(rover)
+        }
+        return fotos
+    }
+
+    suspend fun getRoverManifest(rover: String): PhotoManifest{
+        val roverManifest: PhotoManifest
+        withContext(Dispatchers.IO){
+            roverManifest = NasaApi.retrofitMarsRoversService.getRoverManifest(rover)
+        }
+        return roverManifest
+    }
 }
 

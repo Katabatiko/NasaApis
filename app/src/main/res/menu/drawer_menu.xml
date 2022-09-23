@@ -5,5 +5,8 @@
         android:title="@string/imagenes" />
     <item
         android:id="@+id/epicThumsFragment"
-        android:title="Imágenes de la Tierra" />
+        android:title="@string/imgs_tierra" />
+    <item
+        android:id="@+id/marsRoverPhotosFragment"
+        android:title="@string/imgs_marte" />
 </menu>

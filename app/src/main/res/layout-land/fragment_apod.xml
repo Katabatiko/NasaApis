@@ -28,7 +28,7 @@
             android:id="@+id/apod"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:scaleType="centerCrop"
+            android:scaleType="centerInside"
             app:background_color="@color/dark_grey"
             app:zoomImageUrl="@{ domainApod.isVideo ? domainApod.url : domainApod.hdurl }" />
 
