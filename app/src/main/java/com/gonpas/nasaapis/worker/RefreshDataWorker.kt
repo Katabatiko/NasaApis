@@ -9,6 +9,7 @@ import com.gonpas.nasaapis.database.getDatabase
 import com.gonpas.nasaapis.repository.NasaRepository
 import retrofit2.HttpException
 
+private const val TAG = "xxRdw"
 class RefreshDataWorker(appContext: Context, params: WorkerParameters) : CoroutineWorker(appContext, params) {
     override suspend fun doWork(): Result {
         val database = getDatabase(applicationContext)
@@ -16,11 +17,12 @@ class RefreshDataWorker(appContext: Context, params: WorkerParameters) : Corouti
 
         try {
             repository.getTodayApod()
+
         }catch (e: HttpException){
-            Log.d("xxRdw","RefreshDataWorker retry later")
+            Log.d(TAG,"RefreshDataWorker retry later")
             return Result.retry()
         }
-        Log.d("xxRdw","RefreshDataWorker success")
+        Log.d(TAG,"RefreshDataWorker success")
         return Result.success()
     }
 
