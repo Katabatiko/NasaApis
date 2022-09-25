@@ -11,6 +11,8 @@ import com.gonpas.nasaapis.domain.DomainApod
 import com.gonpas.nasaapis.repository.NasaRepository
 import kotlinx.coroutines.launch
 
+private const val TAG = "xxTavm"
+
 class TodayApodViewModel(apod: DomainApod, app: Application) : AndroidViewModel(app) {
 
     private val repository = NasaRepository(getDatabase(app))
@@ -32,25 +34,28 @@ class TodayApodViewModel(apod: DomainApod, app: Application) : AndroidViewModel(
     }
 
     fun delApod(){
+//        Log.d(TAG, "iniciando proceso de borrado")
         viewModelScope.launch {
             val actualApod = todayApod.value ?: return@launch
-                 removeApod(actualApod.apodId)
+//            Log.d(TAG, "en coroutina de borrado")
+             removeApod(actualApod.apodId)
         }
         navigateBack()
     }
 
     private suspend fun removeApod(key: Long){
+//        Log.d(TAG, "solicitando borrado al repositorio")
             repository.removeApod(key)
     }
 
     fun navigateBack(){
         _navigateUp.value = true
-        Log.d("xxTavm","invocado navigateBack()")
+//        Log.d(TAG,"invocado navigateBack()")
     }
 
     fun navigated(){
         _navigateUp.value = false
-        Log.d("xxTavm","invocado navigated()")
+//        Log.d(TAG,"invocado navigated()")
     }
 
     fun launchVideo(){

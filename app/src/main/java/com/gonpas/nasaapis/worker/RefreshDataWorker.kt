@@ -10,12 +10,14 @@ import com.gonpas.nasaapis.repository.NasaRepository
 import retrofit2.HttpException
 
 private const val TAG = "xxRdw"
-class RefreshDataWorker(appContext: Context, params: WorkerParameters) : CoroutineWorker(appContext, params) {
+class RefreshDataWorker(val appContext: Context, params: WorkerParameters) : CoroutineWorker(appContext, params) {
+
     override suspend fun doWork(): Result {
-        val database = getDatabase(applicationContext)
+        val database = getDatabase(appContext)
         val repository = NasaRepository(database)
 
         try {
+            Log.d(TAG,"RefreshDataWorker iniciado")
             repository.getTodayApod()
 
         }catch (e: HttpException){

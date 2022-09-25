@@ -56,20 +56,13 @@ class RoverManifestFragment : Fragment() {
 
         webChromeClient = WebChromeClient()
         Log.d(TAG,"url: $url")
-       /* var width = 200
-        var height = 200
-        webView.doOnLayout {
-            height = it.measuredHeight
-            width = it.measuredWidth
-        }
-        Log.d("XXRmf","alto: $height / ancho: $width")*/
 
         //loadUrl(url)
         loadData(htmlString(url), "text/html", "utf-8")
     }
     private fun htmlString(url: String): String{
         //https://mars.nasa.gov/layout/embed/model/?s=6
-        Log.d(TAG,"url: $url")
+//        Log.d(TAG,"url: $url")
         return """
             <iframe src='$url' width='100%' height='100%' scrolling='no' frameborder='0' allowfullscreen></iframe>
           """

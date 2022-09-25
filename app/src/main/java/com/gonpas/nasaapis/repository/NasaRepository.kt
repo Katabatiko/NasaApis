@@ -13,7 +13,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 
-private const val EPIC_FOTO_URL = "https://epic.gsfc.nasa.gov/archive/"
+private const val TAG = "xxNr"
 
 class NasaRepository(private val database: NasaDatabase) {
     /******************************************************************************************************/
@@ -29,9 +29,9 @@ class NasaRepository(private val database: NasaDatabase) {
      *
      */
     fun getApodsFromDb(): LiveData<List<ApodDb>> {
-        Log.d("xxNr", "Solicitando todos los apods")
+      //  Log.d(TAG, "Solicitando todos los apods")
         val apods = database.nasaDao.getAllApods()
-        Log.d("xxNr","Total apods recibidos: ${apods.value?.size ?: 0}")
+//        Log.d(TAG,"Total apods recibidos: ${apods.value?.size ?: 0}")
         return apods
     }
 
@@ -40,20 +40,21 @@ class NasaRepository(private val database: NasaDatabase) {
      * comprobando si no ha sido ya recogido
      */
     suspend fun getTodayApod() {
-        Log.d("xxNr", "Solicitando el apod del servicio")
+        Log.d(TAG, "Solicitando el apod del servicio")
         withContext(Dispatchers.IO) {
             val lastApod = database.nasaDao.getLastApod()
-            Log.d("xxNr", "fecha ultimo apod: ${lastApod?.date ?: "nulo"}")
+            Log.d(TAG, "fecha ultimo apod: ${lastApod?.date ?: "nulo"}")
             val todayApod = NasaApi.retrofitApodService.getApod()
-            Log.d("xxNr", "fecha todayApod: ${todayApod.date}")
-            Log.d("xxNr","todayApod: $todayApod")
+            Log.d(TAG, "fecha todayApod: ${todayApod.date}")
+//            Log.d(TAG,"todayApod: $todayApod")
+            // si es nulo es porque la base de datos está vacía
             if (lastApod == null) {
                 database.nasaDao.insertApod(todayApod.asDatabaseModel())
             }else {
                 if (lastApod.date != todayApod.date) {
                     database.nasaDao.insertApod(todayApod.asDatabaseModel())
                 } else {
-                    Log.d("Nasa Repository","Imagen ya contenida")
+                    Log.d(TAG,"Imagen ya contenida")
                 }
             }
         }
@@ -62,7 +63,7 @@ class NasaRepository(private val database: NasaDatabase) {
     suspend fun removeApod(key: Long){
         withContext(Dispatchers.IO){
             val afectedRows = database.nasaDao.removeApod(key)
-            Log.d("xxNr","elementos eliminados: $afectedRows")
+            Log.d(TAG,"elementos eliminados: $afectedRows")
         }
     }
 

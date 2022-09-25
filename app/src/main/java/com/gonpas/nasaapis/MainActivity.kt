@@ -57,7 +57,6 @@ class MainActivity : AppCompatActivity() {
 
     private fun delayedInit(){
         applicationScope.launch {
-          //  Timber.plant(Ti)
             setupRecurringWork()
         }
     }
@@ -67,18 +66,19 @@ class MainActivity : AppCompatActivity() {
         val constraints = Constraints.Builder()
             .setRequiredNetworkType(NetworkType.UNMETERED)
             .setRequiresBatteryNotLow(true)
-            .apply {
+            .setRequiresStorageNotLow(true)
+            /*.apply {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
                     setRequiresDeviceIdle(true)
                 }
-            }
+            }*/
             .build()
 
         val repeatingRequest = PeriodicWorkRequestBuilder<RefreshDataWorker>(1, TimeUnit.DAYS)
-          //  .setConstraints(constraints)
+            .setConstraints(constraints)
             .build()
 
-        Log.d(TAG,"Programada petición de sincronicacion de trabajo periódico")
+        Log.d(TAG,"Programada petición de sincronicacion con apod del dia")
         val workManager = WorkManager.getInstance(application)
         workManager
             .enqueueUniquePeriodicWork(
@@ -86,7 +86,8 @@ class MainActivity : AppCompatActivity() {
             ExistingPeriodicWorkPolicy.KEEP,
             repeatingRequest
         )
-        /*workManager.getWorkInfoByIdLiveData(repeatingRequest.id)  NO SE PUEDE OBSERVAR EN UN HILO DE BACKGROUND
+        /*workManager.enqueue(oneRequest)
+        workManager.getWorkInfoByIdLiveData(repeatingRequest.id)  //  NO SE PUEDE OBSERVAR EN UN HILO DE BACKGROUND
             .observe(this) {
                 if (it.state == WorkInfo.State.ENQUEUED) {
                     // Show the work state in text view

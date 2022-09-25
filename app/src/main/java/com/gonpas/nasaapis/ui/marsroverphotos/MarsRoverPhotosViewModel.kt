@@ -17,6 +17,7 @@ import com.gonpas.nasaapis.ui.apods.NasaApiStatus
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.launch
 
+private const val TAG ="xxMrpvm"
 class MarsRoverPhotosViewModel(application: Application) : AndroidViewModel(application){
 
     private val repository = NasaRepository(getDatabase(application))
@@ -55,19 +56,19 @@ class MarsRoverPhotosViewModel(application: Application) : AndroidViewModel(appl
 
     fun setDia(dia: String) {
         _dia.value = dia
-        Log.d("xxMrpvm","setDia: ${_dia.value}")
+//        Log.d(TAG,"setDia: ${_dia.value}")
     }
     fun setMes(mes: String) {
         _mes.value = mes
-        Log.d("xxMrpvm","setMes: ${_mes.value}")
+//        Log.d(TAG,"setMes: ${_mes.value}")
     }
     fun setAnno(anno: String){
         _anno.value = anno
-        Log.d("xxMrpvm","setAño: ${_anno.value}")
+//        Log.d(TAG,"setAño: ${_anno.value}")
     }
 
     fun radioBtnChecked(view: View){
-       // Log.d("xxMrpvm","seleccionado: ${view.id}")
+       // Log.d(TAG,"seleccionado: ${view.id}")
         _rover.value = when(view.id){
             R.id.perseverance -> "perseverance"
             R.id.curiosity -> "curiosity"
@@ -89,7 +90,7 @@ class MarsRoverPhotosViewModel(application: Application) : AndroidViewModel(appl
                 throw ce
             } catch (e: Exception) {
                 _status.value = NasaApiStatus.ERROR
-                Log.d("xxMrpvm", "error de descarga: ${e.message}")
+                Log.e(TAG, "error de descarga: ${e.message}")
                 Toast.makeText(getApplication(), "Fecha fuera de rango\n${e.message}", Toast.LENGTH_LONG).show()
             }
         }
@@ -115,7 +116,7 @@ class MarsRoverPhotosViewModel(application: Application) : AndroidViewModel(appl
                     throw ce
                 } catch (e: Exception) {
                     _status.value = NasaApiStatus.ERROR
-                    Log.d("xxMrpvm", "error de descarga: ${e.message}")
+                    Log.e(TAG, "error de descarga: ${e.message}")
                     Toast.makeText(getApplication(), e.message, Toast.LENGTH_LONG).show()
                 }
             }
@@ -132,7 +133,7 @@ class MarsRoverPhotosViewModel(application: Application) : AndroidViewModel(appl
                                 throw ce
                             } catch (e: Exception) {
                                 _status.value = NasaApiStatus.ERROR
-                                Log.d("xxMrpvm", "error de descarga: ${e.message}")
+                                Log.e(TAG, "error de descarga: ${e.message}")
                                 Toast.makeText(
                                     getApplication(),
                                     "Fecha fuera de rango\n${e.message}",
@@ -165,7 +166,7 @@ class MarsRoverPhotosViewModel(application: Application) : AndroidViewModel(appl
             }catch (ce: CancellationException) {
                 throw ce
             } catch (e: Exception) {
-                Log.d("xxMrpvm", "error de descarga: ${e.message}")
+                Log.e(TAG, "error de descarga: ${e.message}")
                 Toast.makeText(getApplication(), "Sin acceso a Internet", Toast.LENGTH_LONG).show()
             }
         }

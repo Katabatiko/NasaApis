@@ -15,6 +15,8 @@ import com.gonpas.nasaapis.databinding.EpicsAnimationBinding
 import com.gonpas.nasaapis.domain.DomainEpic
 import java.util.*
 
+private const val TAG = "xxEsf"
+
 class EpicSliderFragment : Fragment(), ViewPagerAdapter.ConditionViewPager {
 
     lateinit var imageList: List<DomainEpic>
@@ -56,7 +58,7 @@ class EpicSliderFragment : Fragment(), ViewPagerAdapter.ConditionViewPager {
 
     override fun condition(position: Int, fullSize: Int) {
         if (position == fullSize){
-            Log.d("xxEsf","posicion final: $position")
+            Log.d(TAG,"posicion final: $position")
         }
     }
 }

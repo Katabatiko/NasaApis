@@ -35,15 +35,14 @@ import com.ravikoradiya.zoomableimageview.ZoomableImageView
 import java.lang.Float.max
 import java.lang.Float.min
 
+private const val TAG = "xxTaf"
+
 class TodayApodFragment : Fragment() {
 
     private lateinit var viewModel: TodayApodViewModel
     private lateinit var binding: FragmentApodBinding
     private lateinit var apod: DomainApod
-    // Declaring GestureDetector,
-    // ScalingFactor and ImageView
-    //private lateinit var scaleGestureDetector: ScaleGestureDetector
-    //private var mScaleFactor = 1.0f
+
     private lateinit var zoomView: ZoomableImageView
 
 
@@ -56,6 +55,7 @@ class TodayApodFragment : Fragment() {
         binding.lifecycleOwner = this
 
         apod = TodayApodFragmentArgs.fromBundle(requireArguments()).apod
+        Log.d(TAG, "recibido apod de fecha ${apod.date}")
         binding.domainApod = apod
 
         val viewMoelFactory = TodayApodViewMoelFactory(apod, app)
@@ -72,7 +72,7 @@ class TodayApodFragment : Fragment() {
         }
 
         viewModel.launchVideo.observe(viewLifecycleOwner){
-            Log.d("Taf","observado launchVideo = $it")
+//            Log.d(TAG,"observado launchVideo = $it")
             if(it){
                 playVideo()
                 viewModel.videoLaunched()
@@ -80,9 +80,6 @@ class TodayApodFragment : Fragment() {
         }
 
         zoomView = binding.apod
-        //scaleGestureDetector = ScaleGestureDetector(this.context, ScaleListener())
-
-
 
         return binding.root
     }
@@ -90,44 +87,34 @@ class TodayApodFragment : Fragment() {
 
     override fun onStop() {
         super.onStop()
-        Log.d("xxTaf","onStop")
+//        Log.d(TAG,"onStop")
     }
 
     override fun onResume() {
         super.onResume()
-        Log.d("xxTaf","onResume")
+//        Log.d(TAG,"onResume")
         if(requireActivity().resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE){
             requireActivity().actionBar?.hide()
             requireActivity().window.addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
             requireActivity().window.decorView.visibility = View.GONE
-            Log.d("xxTaf","Orientacion landscape")
+//            Log.d(TAG,"Orientacion landscape")
         }else {
             setHasOptionsMenu(true)
             requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
-            Log.d("xxTaf","Orientacion portrait")
+//            Log.d(TAG,"Orientacion portrait")
         }
     }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        Log.d("xxTaf","onAttach")
+//        Log.d(TAG,"onAttach")
     }
 
     override fun onDetach() {
         super.onDetach()
-        Log.d("xxTaf","onDetach")
+//        Log.d(TAG,"onDetach")
     }
 
-    /*override fun onConfigurationChanged(newConfig: Configuration) {
-        super.onConfigurationChanged(newConfig)
-        Log.d("xxTaf","Cambio de configuracion: ${newConfig.orientation}")
-
-        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE){
-            requireActivity().window.addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
-        }else{
-            requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
-        }
-    }*/
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
@@ -141,12 +128,12 @@ class TodayApodFragment : Fragment() {
     }
 
     fun playVideo() {
-        Log.d("xxTaf","playvideo")
+//        Log.d(TAG,"playvideo")
         val packageManager = context?.packageManager ?: return
         // Try to generate a direct intent to the YouTube app
         var intent = Intent(Intent.ACTION_VIEW, apod.launchUri)
         if (intent.resolveActivity(packageManager) == null) {
-            Log.d("xxTaf","No hay youtube app")
+//            Log.d(TAG,"No hay youtube app")
             // YouTube app isn't found, use the web url
             intent = Intent(Intent.ACTION_VIEW, Uri.parse(apod.hdurl))
         }
@@ -164,15 +151,5 @@ class TodayApodFragment : Fragment() {
             return Uri.parse("vnd.youtube:" + httpUri.getQueryParameter("v"))
         }
 
-    // Zooming in and out in a bounded range
-    /*private inner class ScaleListener : ScaleGestureDetector.SimpleOnScaleGestureListener() {
-        override fun onScale(scaleGestureDetector: ScaleGestureDetector): Boolean {
-            mScaleFactor *= scaleGestureDetector.scaleFactor
-            mScaleFactor = max(0.1f, min(mScaleFactor, 10.0f))
-            zoomView.scaleX = mScaleFactor
-            zoomView.scaleY = mScaleFactor
-            return true
-        }
-    }*/
 
 }

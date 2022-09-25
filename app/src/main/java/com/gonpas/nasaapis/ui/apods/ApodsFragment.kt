@@ -60,8 +60,8 @@ class ApodsFragment : Fragment() {
             apodsAdapter.let {
                 it.submitList(list.asListDomainModel())
             }
-            Log.d("xxAf","Observados cambios en la lista de apods")
-            Log.d("xxAf","Total apods observados: ${list.size}")
+//            Log.d("xxAf","Observados cambios en la lista de apods")
+//            Log.d("xxAf","Total apods observados: ${list.size}")
         }
 
         viewModel.navigateToTodayApod.observe(viewLifecycleOwner){
@@ -85,7 +85,7 @@ class ApodsFragment : Fragment() {
         inflater.inflate(R.menu.apods_options_menu, menu)
     }
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-         Log.d("xxAf","item selected: ${item.itemId}")
+//         Log.d("xxAf","item selected: ${item.itemId}")
         when(item.itemId){
             R.id.masApodsFragment -> requireView().findNavController().navigate(ApodsFragmentDirections.actionApodsFragmentToMasApodsFragment())
             R.id.randomApods -> viewModel.getApodAleatorios()

@@ -15,6 +15,8 @@ import com.gonpas.nasaapis.ui.apods.NasaApiStatus
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.launch
 
+private const val TAG = "xxEtvm"
+
 class EpicThumbsViewModel(application: Application) : AndroidViewModel(application) {
     val app = application
     private val repository = NasaRepository(getDatabase(application))
@@ -60,9 +62,9 @@ class EpicThumbsViewModel(application: Application) : AndroidViewModel(applicati
         viewModelScope.launch {
             try {
                 _epics.value = repository.getLastEpic().asListDomainEpic()
-         //       Log.d("xxEtvm","last _epics size: ${_epics.value?.size}")
+         //       Log.d(TAG,"last _epics size: ${_epics.value?.size}")
                 val fecha = _epics.value!![0].date.split(" ")[0].split("-")
-       //         Log.d("xxEtvm","fecha: $fecha")
+       //         Log.d(TAG,"fecha: $fecha")
                 _anno.value = fecha[0]
                 _mes.value = fecha[1]
                 _dia.value = fecha[2]
@@ -71,7 +73,7 @@ class EpicThumbsViewModel(application: Application) : AndroidViewModel(applicati
                 throw ce    // NECESARIO PARA CANCELAR EL SCOPE DE LA RUTINA
             }catch (e: Exception){
                 _status.value = NasaApiStatus.ERROR
-                Log.e("xxEtvm", "Error de red: ${e.message}")
+                Log.e(TAG, "Error de red: ${e.message}")
                 Toast.makeText(app, "${ app.getString(R.string.no_network) } \n ${e.message}", Toast.LENGTH_LONG).show()
             }
         }
@@ -79,24 +81,24 @@ class EpicThumbsViewModel(application: Application) : AndroidViewModel(applicati
 
     fun setAnno(anno: String){
         _anno.value = anno
-        Log.d("xxEtvm","setAño: ${_anno.value}")
+//        Log.d(TAG,"setAño: ${_anno.value}")
     }
     fun setMes(mes: String){
         _mes.value = mes
-        Log.d("xxEtvm","setMes: ${_mes.value}")
+//        Log.d(TAG,"setMes: ${_mes.value}")
     }
     fun setDia(dia: String){
         _dia.value = dia
-        Log.d("xxEtvm","setDia: ${_dia.value}")
+//        Log.d(TAG,"setDia: ${_dia.value}")
     }
 
     fun getEpicByDate(){
         val date = "%s-%s-%s".format(anno.value, mes.value, dia.value)
-       // Log.d("xxEtvm","fecha formateada: $date")
+       // Log.d(TAG,"fecha formateada: $date")
         viewModelScope.launch {
             try {
                 _epics.value = repository.getNaturalEpicByDate(date).asListDomainEpic()
-     //           Log.d("xxEtvm","by date _epics size: ${_epics.value?.size}")
+     //           Log.d(TAG,"by date _epics size: ${_epics.value?.size}")
                 if (!_epics.value.isNullOrEmpty()){
                     val fecha = _epics.value!![0].date.split(" ")[0].split("-")
                     _anno.value = fecha[0]
@@ -108,7 +110,7 @@ class EpicThumbsViewModel(application: Application) : AndroidViewModel(applicati
             }catch (ce: CancellationException) {
                 throw ce    // NECESARIO PARA CANCELAR EL SCOPE DE LA RUTINA
             }catch (e: Exception){
-                Log.e("xxEtvm", "Error de red: ${e.message}")
+                Log.e(TAG, "Error de red: ${e.message}")
                 Toast.makeText(app, "${ app.getString(R.string.no_network) } \n ${e.message}", Toast.LENGTH_LONG).show()
             }
         }
@@ -122,7 +124,7 @@ class EpicThumbsViewModel(application: Application) : AndroidViewModel(applicati
     }
 
     fun goSlider(){
-        Log.d("xxEtvm","Go slider")
+        Log.d(TAG,"Go slider")
         _navigateToSliderEpics.value = _epics.value
     }
     fun navigatedToSlider(){

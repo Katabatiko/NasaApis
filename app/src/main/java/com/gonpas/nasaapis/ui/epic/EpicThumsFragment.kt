@@ -18,6 +18,8 @@ import com.gonpas.nasaapis.databinding.EpicItemBinding
 import com.gonpas.nasaapis.databinding.FragmentEpicThumbsBinding
 import com.gonpas.nasaapis.domain.DomainEpic
 
+private const val TAG = "xxEtf"
+
 class EpicThumsFragment : Fragment() {
 
     private val viewModel: EpicThumbsViewModel by lazy {
@@ -49,7 +51,7 @@ class EpicThumsFragment : Fragment() {
 //            Log.d("xxEtf","it size: ${list.size}")
             adapter.let { it.datos = list }
             adapter.notifyDataSetChanged()
-//            Log.d("xxEtf","adapter datos size: ${adapter.datos.size}")
+//            Log.d(TAG,"adapter datos size: ${adapter.datos.size}")
         }
 
         viewModel.navigateToFullScreenEpic.observe(viewLifecycleOwner){
@@ -63,7 +65,7 @@ class EpicThumsFragment : Fragment() {
         }
 
         viewModel.navigateToSliderEpics.observe(viewLifecycleOwner){
-            Log.d("xxEtf","Observados cambios en navigate to slider")
+//            Log.d(TAG,"Observados cambios en navigate to slider")
             if(it.isNotEmpty()){
                 findNavController().navigate(EpicThumsFragmentDirections.actionEpicThumsFragmentToEpicSliderFragment(it.toTypedArray()))
                 viewModel.navigatedToSlider()
@@ -104,12 +106,6 @@ class EpicThumsFragment : Fragment() {
 
         return binding.root
     }
-
-    /*override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        // TODO: Use the ViewModel
-    }*/
-
 }
 
 class EpicThumbsAdapter(private val onClickListener: OnClickListener) : RecyclerView.Adapter<EpicThumbsAdapter.EpicViewHolder>() {
@@ -129,14 +125,14 @@ class EpicThumbsAdapter(private val onClickListener: OnClickListener) : Recycler
             onClickListener.onClick(item)
         }
         holder.binding.epic = item
-       // Log.d("xxTtf","item: ${item.imageName}")
+       // Log.d(TAG,"item: ${item.imageName}")
         holder.binding.executePendingBindings()
     }
 
     class EpicViewHolder(val binding: EpicItemBinding): RecyclerView.ViewHolder(binding.root){
         companion object{
             fun from(parent: ViewGroup) : EpicViewHolder{
-                //Log.d("xxEtf","Creango epic view holder")
+                //Log.d(TAG","Creango epic view holder")
                 val layoutInflater = LayoutInflater.from(parent.context)
                 val binding = EpicItemBinding.inflate(layoutInflater, parent, false)
                 return EpicViewHolder(binding)

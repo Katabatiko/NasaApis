@@ -13,6 +13,8 @@ import kotlinx.coroutines.launch
 
 enum class NasaApiStatus { LOADING, ERROR, DONE }
 
+private const val TAG = "xxAvm"
+
 class ApodsViewModel(application: Application) : AndroidViewModel(application) {
 
     private val nasaRepository = NasaRepository(getDatabase(application))
@@ -38,7 +40,7 @@ class ApodsViewModel(application: Application) : AndroidViewModel(application) {
             }catch (ce: CancellationException) {
                 throw ce    // NECESARIO PARA CANCELAR EL SCOPE DE LA RUTINA
             }catch (e: Exception){
-                    Log.e("xxAvm", "Error de red: ${e.message}")
+                    Log.e(TAG, "Error de red: ${e.message}")
                     Toast.makeText(application, "No hay acceso a Internet", Toast.LENGTH_LONG).show()
             }
         }
@@ -53,13 +55,13 @@ class ApodsViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun getApodAleatorios(count: Int = 5){
-        Log.d("xxAvm","Entrando en coroutine de apods aleatorios")
+ //       Log.d(TAG,"Entrando en coroutine de apods aleatorios")
         viewModelScope.launch {
             _status.value = NasaApiStatus.LOADING
             try {
                 nasaRepository.getRandomApods()
             }catch (e: Exception){
-                Log.d("xxAvm","Error: ${e.message}")
+                Log.d(TAG,"Error: ${e.message}")
                 _status.value = NasaApiStatus.ERROR
                 _errorMsg.value = e.message
             }

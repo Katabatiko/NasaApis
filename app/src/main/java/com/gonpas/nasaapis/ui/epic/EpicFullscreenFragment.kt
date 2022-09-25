@@ -12,6 +12,8 @@ import com.bumptech.glide.request.RequestOptions
 import com.gonpas.nasaapis.R
 import com.gonpas.nasaapis.databinding.FragmentFullscreenEpicBinding
 
+private const val TAG = "xxEff"
+
 /**
  * An example full-screen fragment that shows and hides the system UI (i.e.
  * status bar and navigation/system bar) with user interaction.
@@ -21,7 +23,7 @@ class EpicFullscreenFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         val binding = DataBindingUtil.inflate<FragmentFullscreenEpicBinding>(inflater, R.layout.fragment_fullscreen_epic, container, false)
 
         val args = EpicFullscreenFragmentArgs.fromBundle(requireArguments())

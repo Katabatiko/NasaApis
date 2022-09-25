@@ -14,6 +14,8 @@ import androidx.navigation.fragment.findNavController
 import com.gonpas.nasaapis.R
 import com.gonpas.nasaapis.databinding.FragmentMasApodsBinding
 
+private const val TAG = "xxMaf"
+
 class MasApodsFragment : Fragment() {
 
     private val viewModel: MasApodsViewModel by lazy {
@@ -42,7 +44,7 @@ class MasApodsFragment : Fragment() {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                Log.d("xxMaf","dia: $p0")
+  //              Log.d(TAG,"dia: $p0")
                 viewModel.setDia(p0.toString())
             }
 
@@ -52,7 +54,7 @@ class MasApodsFragment : Fragment() {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                Log.d("xxMaf","mes: $p0")
+ //               Log.d(TAG,"mes: $p0")
                 viewModel.setMes(p0.toString())
             }
 
@@ -62,7 +64,7 @@ class MasApodsFragment : Fragment() {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                Log.d("xxMaf","año: $p0")
+   //             Log.d(TAG,"año: $p0")
                 viewModel.setAnno(p0.toString())
             }
 
@@ -70,7 +72,7 @@ class MasApodsFragment : Fragment() {
         })
 
         viewModel.apod.observe(viewLifecycleOwner){
-            Log.d("xxMaf","apod observer: $it")
+   //         Log.d(TAG,"apod observer: $it")
             if (it != null) {
                 this.findNavController().navigate(
                     MasApodsFragmentDirections.actionMasApodsFragmentToTodayApodFragment(it)

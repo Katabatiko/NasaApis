@@ -40,6 +40,6 @@ fun extractedDate(date: String, field: String): Int{
         "dia" -> extractedDate[2].toInt()
         "mes" -> extractedDate[1].toInt()
         "anno" -> extractedDate[0].toInt()
-        else -> Log.e("xxBu","Campo de fecha erróneo")
+        else -> Log.e("xxU","Campo de fecha erróneo")
     }
 }
