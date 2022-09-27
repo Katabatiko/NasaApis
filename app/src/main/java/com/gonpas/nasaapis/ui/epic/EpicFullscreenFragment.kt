@@ -41,7 +41,7 @@ class EpicFullscreenFragment : Fragment() {
                 .load(imgUri)
                 .apply(
                     RequestOptions()
-                        .placeholder(R.drawable.loading_animation)
+                        .placeholder(R.drawable.loading_animation_big)
                         .error(R.drawable.ic_broken_image))
                 .into(imgView)
         }

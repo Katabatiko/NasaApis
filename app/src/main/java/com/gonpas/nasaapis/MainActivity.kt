@@ -31,9 +31,9 @@ class MainActivity : AppCompatActivity() {
         val binding = DataBindingUtil.setContentView<ActivityMainBinding>(this, R.layout.activity_main)
 
         drawerLayout = binding.drawerLayout
-        Handler().postDelayed({
+        /*Handler().postDelayed({
             drawerLayout.openDrawer(GravityCompat.START, true)
-        }, 2000)
+        }, 2000)*/
 
 
         val navController = this.findNavController(R.id.nav_host_fragment)

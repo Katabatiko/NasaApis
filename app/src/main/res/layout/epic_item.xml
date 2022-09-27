@@ -19,7 +19,8 @@
             android:layout_height="120dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:setThumb="@{ epic }" />
+            app:setThumb="@{ epic }"
+            android:contentDescription="@{ epic.caption }" />
 
         <TextView
             android:id="@+id/hora"

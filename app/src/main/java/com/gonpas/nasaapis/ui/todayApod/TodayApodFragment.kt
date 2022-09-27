@@ -130,6 +130,7 @@ class TodayApodFragment : Fragment() {
     fun playVideo() {
 //        Log.d(TAG,"playvideo")
         val packageManager = context?.packageManager ?: return
+//        Log.d(TAG, "videoUrl: ${apod.hdurl} - videoUri: ${apod.launchUri}")
         // Try to generate a direct intent to the YouTube app
         var intent = Intent(Intent.ACTION_VIEW, apod.launchUri)
         if (intent.resolveActivity(packageManager) == null) {
@@ -148,6 +149,7 @@ class TodayApodFragment : Fragment() {
     private val DomainApod.launchUri: Uri
         get() {
             val httpUri = Uri.parse(hdurl)
+  //          Log.d(TAG, "httpUri: $httpUri")
             return Uri.parse("vnd.youtube:" + httpUri.getQueryParameter("v"))
         }
 

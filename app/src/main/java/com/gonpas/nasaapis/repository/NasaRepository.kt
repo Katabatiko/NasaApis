@@ -11,6 +11,7 @@ import com.gonpas.nasaapis.domain.DomainEpic
 import com.gonpas.nasaapis.network.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.text.SimpleDateFormat
 
 
 private const val TAG = "xxNr"
@@ -43,19 +44,24 @@ class NasaRepository(private val database: NasaDatabase) {
         Log.d(TAG, "Solicitando el apod del servicio")
         withContext(Dispatchers.IO) {
             val lastApod = database.nasaDao.getLastApod()
-            Log.d(TAG, "fecha ultimo apod: ${lastApod?.date ?: "nulo"}")
-            val todayApod = NasaApi.retrofitApodService.getApod()
-            Log.d(TAG, "fecha todayApod: ${todayApod.date}")
-//            Log.d(TAG,"todayApod: $todayApod")
-            // si es nulo es porque la base de datos está vacía
-            if (lastApod == null) {
-                database.nasaDao.insertApod(todayApod.asDatabaseModel())
-            }else {
-                if (lastApod.date != todayApod.date) {
+//            Log.d(TAG, "fecha ultimo apod: ${lastApod?.date ?: "nulo"}")
+            val timeMillis = System.currentTimeMillis()
+            val sdf = SimpleDateFormat("yyyy-MM-dd")
+            val todayDate = sdf.format(timeMillis)
+            val todayApod: ApodDto
+//            Log.d(TAG, "fecha actual: $todayDate")
+            if ( lastApod != null) {
+                if (lastApod.date != todayDate){
+                    todayApod = NasaApi.retrofitApodService.getApod()
+//                    Log.d(TAG, "fecha todayApod: ${todayApod.date}")
                     database.nasaDao.insertApod(todayApod.asDatabaseModel())
                 } else {
-                    Log.d(TAG,"Imagen ya contenida")
+                    Log.d(TAG, "Imagen ya contenida")
                 }
+            }else{
+                // si es nulo es porque la base de datos está vacía
+                todayApod = NasaApi.retrofitApodService.getApod()
+                database.nasaDao.insertApod(todayApod.asDatabaseModel())
             }
         }
     }
@@ -63,7 +69,7 @@ class NasaRepository(private val database: NasaDatabase) {
     suspend fun removeApod(key: Long){
         withContext(Dispatchers.IO){
             val afectedRows = database.nasaDao.removeApod(key)
-            Log.d(TAG,"elementos eliminados: $afectedRows")
+//            Log.d(TAG,"elementos eliminados: $afectedRows")
         }
     }
 
@@ -98,9 +104,9 @@ class NasaRepository(private val database: NasaDatabase) {
         var lista: List<EpicDTO>
         withContext(Dispatchers.IO) {
             lista =  NasaApi.retrofitEpicService.getLastNaturalEpic()
-        Log.d("xxNr","dentro rutina Epics recibidos: $lista")
+//        Log.d("xxNr","dentro rutina Epics recibidos: $lista")
         }
-        Log.d("xxNr","fuera rutina Epics recibidos: $lista")
+//        Log.d("xxNr","fuera rutina Epics recibidos: $lista")
         return lista
     }
 
@@ -108,9 +114,9 @@ class NasaRepository(private val database: NasaDatabase) {
         var lista: List<EpicDTO>
         withContext(Dispatchers.IO){
             lista = NasaApi.retrofitEpicService.getNaturalEpicByDate(date)
-            Log.d("xxNr","IN rutina Epics by date recibidos: $lista")
+//            Log.d("xxNr","IN rutina Epics by date recibidos: $lista")
         }
-        Log.d("xxNr","OUT rutina Epics recibidos: $lista")
+//        Log.d("xxNr","OUT rutina Epics recibidos: $lista")
         return lista    }
     /******************************************************************************************************/
     /******************************************************************************************************/

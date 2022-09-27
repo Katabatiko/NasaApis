@@ -48,7 +48,8 @@
             android:minHeight="150dp"
             app:imageUrl="@{ domainApod.url }"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/pic_title" />
+            app:layout_constraintTop_toBottomOf="@+id/pic_title"
+            android:contentDescription="@{ domainApod.title }" />
         <!--
             app:imageUrl="@{ domainApod.mediaType ? "image" domainApod.url : "video" domainApod.thumbUrl }"
             android:visibility="@{ domainApod.isVideo ? View.INVISIBLE : View.VISIBLE  }"-->
