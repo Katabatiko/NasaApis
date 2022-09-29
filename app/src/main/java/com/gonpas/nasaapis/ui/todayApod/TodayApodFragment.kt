@@ -131,6 +131,12 @@ class TodayApodFragment : Fragment() {
 //        Log.d(TAG,"playvideo")
         val packageManager = context?.packageManager ?: return
 //        Log.d(TAG, "videoUrl: ${apod.hdurl} - videoUri: ${apod.launchUri}")
+        //controlando la integridad de la url
+//        Log.d(TAG, "actual apod.hdurl: ${apod.hdurl}")
+        if(!apod.hdurl.startsWith("http://") && !apod.hdurl.startsWith("https://")){
+            apod.hdurl = "http:${apod.hdurl}"
+            Log.d(TAG, "new hdurl: ${apod.hdurl}")
+        }
         // Try to generate a direct intent to the YouTube app
         var intent = Intent(Intent.ACTION_VIEW, apod.launchUri)
         if (intent.resolveActivity(packageManager) == null) {
@@ -138,6 +144,7 @@ class TodayApodFragment : Fragment() {
             // YouTube app isn't found, use the web url
             intent = Intent(Intent.ACTION_VIEW, Uri.parse(apod.hdurl))
         }
+            Log.d(TAG, "final apdo.hdurl: ${apod.hdurl}")
             startActivity(intent)
     }
 
@@ -148,8 +155,12 @@ class TodayApodFragment : Fragment() {
      */
     private val DomainApod.launchUri: Uri
         get() {
+            /*if(!hdurl.startsWith("http://") && !hdurl.startsWith("https://")){
+                hdurl = "http://$hdurl"
+                Log.d(TAG, "new hdurl: $hdurl")
+            }*/
             val httpUri = Uri.parse(hdurl)
-  //          Log.d(TAG, "httpUri: $httpUri")
+          //  Log.d(TAG, "httpUri.getQueryParameter: ${httpUri.getQueryParameter('v'.toString())}")
             return Uri.parse("vnd.youtube:" + httpUri.getQueryParameter("v"))
         }
 

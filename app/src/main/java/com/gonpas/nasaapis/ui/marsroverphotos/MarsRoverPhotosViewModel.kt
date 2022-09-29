@@ -91,17 +91,24 @@ class MarsRoverPhotosViewModel(application: Application) : AndroidViewModel(appl
             } catch (e: Exception) {
                 _status.value = NasaApiStatus.ERROR
                 Log.e(TAG, "error de descarga: ${e.message}")
-                Toast.makeText(getApplication(), "Fecha fuera de rango\n${e.message}", Toast.LENGTH_LONG).show()
+                Toast.makeText(getApplication(), "Sin acceso a internet\n${e.message}", Toast.LENGTH_LONG).show()
             }
         }
     }
 
     suspend fun getLatestMarsFotos(){
-        _photos.value = repository.getLatestMarsRoversPhotos(rover.value!!).photos
-        val fecha = photos.value?.get(0)?.earthDate?.split("-")
-        _anno.value = fecha?.get(0)
-        _mes.value = fecha?.get(1)
-        _dia.value = fecha?.get(2)
+        try {
+            _photos.value = repository.getLatestMarsRoversPhotos(rover.value!!).photos
+            val fecha = photos.value?.get(0)?.earthDate?.split("-")
+            _anno.value = fecha?.get(0)
+            _mes.value = fecha?.get(1)
+            _dia.value = fecha?.get(2)
+        }catch (ce: CancellationException) {
+            throw ce    // NECESARIO PARA CANCELAR EL SCOPE DE LA RUTINA
+        }catch (e: Exception){
+            Log.e(TAG, "Error de red: ${e.message}")
+            Toast.makeText(getApplication(), "Sin acceso a Internet", Toast.LENGTH_LONG).show()
+        }
 
     }
 
@@ -136,7 +143,7 @@ class MarsRoverPhotosViewModel(application: Application) : AndroidViewModel(appl
                                 Log.e(TAG, "error de descarga: ${e.message}")
                                 Toast.makeText(
                                     getApplication(),
-                                    "Fecha fuera de rango\n${e.message}",
+                                    "Sin acceso a internet\n${e.message}",
                                     Toast.LENGTH_LONG
                                 ).show()
                             }
