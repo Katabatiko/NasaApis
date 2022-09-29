@@ -155,15 +155,30 @@ class MarsRoverPhotosViewModel(application: Application) : AndroidViewModel(appl
     }
 
     suspend fun getMarsPhotos(){
-        val fotos = repository.getMarsPhotos(rover.value!!, "${anno.value}-${mes.value}-${dia.value}")
-        if (fotos.photos.isNotEmpty())
-            _photos.value = fotos.photos
-        else
-            Toast.makeText(getApplication(), "Fecha no disponible", Toast.LENGTH_LONG).show()
+        try {
+            val fotos = repository.getMarsPhotos(rover.value!!, "${anno.value}-${mes.value}-${dia.value}")
+            if (fotos.photos.isNotEmpty())
+                _photos.value = fotos.photos
+            else
+                Toast.makeText(getApplication(), "Fecha no disponible", Toast.LENGTH_LONG).show()
+        }catch (ce: CancellationException) {
+            throw ce
+        } catch (e: Exception) {
+            Log.e(TAG, "error de descarga: ${e.message}")
+            Toast.makeText(getApplication(), "Sin acceso a Internet", Toast.LENGTH_LONG).show()
+        }
     }
 
     suspend fun getRoverManifest(){
-        _navigateToRoverManifest.value = repository.getRoverManifest(rover.value!!).manifest.asDomainModel()
+        try {
+            _navigateToRoverManifest.value =
+                repository.getRoverManifest(rover.value!!).manifest.asDomainModel()
+        }catch (ce: CancellationException) {
+            throw ce
+        } catch (e: Exception) {
+            Log.e(TAG, "error de descarga: ${e.message}")
+            Toast.makeText(getApplication(), "Sin acceso a Internet", Toast.LENGTH_LONG).show()
+        }
     }
 
     fun goToRoverManifest(){
