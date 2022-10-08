@@ -81,8 +81,9 @@ private val retrofitMarsRovers: Retrofit by lazy {
 // la interface define como comunicarse con el web service
 interface NasaApiService {
 
-    // APOD: Astronomy Picture of the Day
-    // entre paréntesis se pone el endpoint que se añadirá al BASE_URL
+    /** APOD: Astronomy Picture of the Day
+    * entre paréntesis se pone el endpoint que se añadirá al BASE_URL
+    */
     @GET("apod")
     suspend fun getApod(@Query("api_key") api_key: String = API_KEY, @Query("thumbs") thumbs: Boolean = true): ApodDto
 
@@ -92,13 +93,18 @@ interface NasaApiService {
     @GET("apod")
     suspend fun getRandomApods(@Query("count") count: Int = 5, @Query("thumbs") thumbs: Boolean = true, @Query("api_key") api_key: String = API_KEY): List<ApodDto>
 
-    // EPIC: Earth Polychromatic Imaging Camera
+    /**
+     * EPIC: Earth Polychromatic Imaging Camera
+      */
     @GET("natural")
     suspend fun getLastNaturalEpic(@Query("api_key") api_key: String = API_KEY): List<EpicDTO>
 
     @GET("natural/date/{date}")
     suspend fun getNaturalEpicByDate(@Path("date") date: String, @Query("api_key") api_key: String = API_KEY): List<EpicDTO>
 
+    /**
+     * Pics from Mars
+     */
     @GET("rovers/{rover}/photos")
     suspend fun getRoverPhotos(@Path("rover") rover: String = CURIOSITY, @Query("earth_date") earth_date: String, @Query("api_key") api_key: String = API_KEY): Photos
 

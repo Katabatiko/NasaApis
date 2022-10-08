@@ -18,6 +18,13 @@ android {
         vectorDrawables.useSupportLibrary = true
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        // exportacion del schema de room
+//        javaCompileOptions {
+//            annotationProcessorOptions {
+//                arguments += mapOf("room.schemaLocation" to "$projectDir/schemas")
+//            }
+//        }
     }
 
     buildTypes {
@@ -36,6 +43,7 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
     kotlinOptions {
         jvmTarget = '1.8'
     }

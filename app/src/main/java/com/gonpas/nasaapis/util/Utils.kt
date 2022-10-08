@@ -2,6 +2,7 @@ package com.gonpas.nasaapis.util
 
 import android.util.Log
 
+private const val TAG = "xxNotifUtils"
 private val PUNCTUATION = listOf(", ", "; ", ": ", " ")
 
 /**
@@ -42,4 +43,11 @@ fun extractedDate(date: String, field: String): Int{
         "anno" -> extractedDate[0].toInt()
         else -> Log.e("xxU","Campo de fecha erróneo")
     }
+}
+
+fun extraerFecha(date: String) : String{
+    var partes = date.split("-")
+    partes = partes.reversed()
+    val template = "%s-%s-%s"
+    return String.format(template, partes[0], partes[1], partes[2])
 }

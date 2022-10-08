@@ -40,30 +40,34 @@ class NasaRepository(private val database: NasaDatabase) {
      * Recoje el apod de hoy y lo guarda en la base de datos,
      * comprobando si no ha sido ya recogido
      */
-    suspend fun getTodayApod() {
+    suspend fun getTodayApod() :Boolean {
         Log.d(TAG, "Solicitando el apod del servicio")
+        var descargado = false
         withContext(Dispatchers.IO) {
             val lastApod = database.nasaDao.getLastApod()
 //            Log.d(TAG, "fecha ultimo apod: ${lastApod?.date ?: "nulo"}")
             val timeMillis = System.currentTimeMillis()
             val sdf = SimpleDateFormat("yyyy-MM-dd")
             val todayDate = sdf.format(timeMillis)
-            val todayApod: ApodDto
 //            Log.d(TAG, "fecha actual: $todayDate")
-            if ( lastApod != null) {
+            val todayApod: ApodDto
+//            if ( lastApod != null) {
                 if (lastApod.date != todayDate){
                     todayApod = NasaApi.retrofitApodService.getApod()
+//                    fecha = extraerFecha(todayApod.date)
 //                    Log.d(TAG, "fecha todayApod: ${todayApod.date}")
                     database.nasaDao.insertApod(todayApod.asDatabaseModel())
+                    descargado = true
                 } else {
                     Log.d(TAG, "Imagen ya contenida")
                 }
-            }else{
-                // si es nulo es porque la base de datos está vacía
-                todayApod = NasaApi.retrofitApodService.getApod()
-                database.nasaDao.insertApod(todayApod.asDatabaseModel())
-            }
+//            }else{
+//                // si es nulo es porque la base de datos está vacía
+//                todayApod = NasaApi.retrofitApodService.getApod()
+//                database.nasaDao.insertApod(todayApod.asDatabaseModel())
+//            }
         }
+        return descargado
     }
 
     suspend fun removeApod(key: Long){
@@ -71,6 +75,16 @@ class NasaRepository(private val database: NasaDatabase) {
             val afectedRows = database.nasaDao.removeApod(key)
 //            Log.d(TAG,"elementos eliminados: $afectedRows")
         }
+    }
+
+    suspend fun getLastApod(): DomainApod{
+        // se usa para recoger el todayApod descargado por el worker,
+        // por lo que no es nulo nunca
+        val lastApod: DomainApod
+        withContext(Dispatchers.IO){
+            lastApod = database.nasaDao.getLastApod().asDomainModel()
+        }
+        return lastApod
     }
 
     suspend fun getApodByDate(date: String): DomainApod?{
@@ -90,11 +104,10 @@ class NasaRepository(private val database: NasaDatabase) {
     suspend fun getRandomApods(count: Int = 5){
        // var apods: List<DomainApod>
         withContext(Dispatchers.IO) {
-            val randomApods = NasaApi.retrofitApodService.getRandomApods()
+            val randomApods = NasaApi.retrofitApodService.getRandomApods(count)
             for (apod in randomApods){
                 database.nasaDao.insertApod(apod.asDatabaseModel())
             }
-          // apods = database.nasaDao.getLastsInserterApods(count).asListDomainModel()
         }
     }
 /******************************************************************************************************/

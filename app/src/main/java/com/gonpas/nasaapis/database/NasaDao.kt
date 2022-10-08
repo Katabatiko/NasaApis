@@ -19,7 +19,7 @@ interface NasaDao {
     fun getAllApods(): LiveData<List<ApodDb>>
 
     @Query("select * from ApodDb order by date desc limit 1")
-    suspend fun getLastApod(): ApodDb?
+    suspend fun getLastApod(): ApodDb
 
     @Query("select * from ApodDb order by apodId desc Limit :key")
     suspend fun getLastsInserterApods(key: Int = 5): List<ApodDb>

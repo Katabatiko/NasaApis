@@ -1,12 +1,16 @@
 <resources>
     <string name="app_name">Nasa Apis</string>
     <string name="iad">Imagen Astronómica del Día</string>
+    <string name="apod_notification_channel_id">apod_channel</string>
+    <string name="apod_notification_channel_name">Apod</string>
+    <string name="autodescarga">Descargada Apod del día %s</string>
 
     <string name="mas">Más</string>
     <string name="automatico">Automático</string>
     <string name="continuar">Continuar</string>
     <string name="finalizar">Finalizar</string>
     <string name="terminar">Terminar</string>
+
 
     <string name="borrar_datos">Borrar datos</string>
     <string name="seguro_borrar">¿Seguro de borrar todos los datos?</string>
