@@ -1,5 +1,6 @@
 package com.gonpas.nasaapis.network
 
+import com.gonpas.nasaapis.database.MarsPhotoDb
 import com.gonpas.nasaapis.domain.DomainRover
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
@@ -67,6 +68,17 @@ data class RoversPhotosDTO (
     @Json(name = "earth_date") val earthDate: String,
     val rover: Rover
 )
+
+fun RoversPhotosDTO.asDatabaseModel(): MarsPhotoDb{
+    return MarsPhotoDb(
+        marsPhotoId = this.id,
+        sol = this.sol,
+        camera = this.camera.fullName,
+        imgSrc = this.imgSrc,
+        earthDate = this.earthDate,
+        rover = this.rover.name
+    )
+}
 
 @JsonClass(generateAdapter = true)
 data class Camera(

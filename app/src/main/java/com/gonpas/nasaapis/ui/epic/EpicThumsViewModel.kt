@@ -9,7 +9,6 @@ import com.gonpas.nasaapis.R
 import com.gonpas.nasaapis.database.getDatabase
 import com.gonpas.nasaapis.domain.DomainEpic
 import com.gonpas.nasaapis.network.asListDomainEpic
-import com.gonpas.nasaapis.network.asLiveDataListDomainEpic
 import com.gonpas.nasaapis.repository.NasaRepository
 import com.gonpas.nasaapis.ui.apods.NasaApiStatus
 import kotlinx.coroutines.CancellationException

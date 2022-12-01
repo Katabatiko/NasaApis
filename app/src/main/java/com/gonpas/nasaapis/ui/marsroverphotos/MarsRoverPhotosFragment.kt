@@ -1,23 +1,23 @@
 package com.gonpas.nasaapis.ui.marsroverphotos
 
 import android.app.Application
+import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.*
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.get
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.gonpas.nasaapis.R
 import com.gonpas.nasaapis.databinding.FragmentMarsRoverPhotosBinding
 import com.gonpas.nasaapis.databinding.MarsFotoItemBinding
 import com.gonpas.nasaapis.network.RoversPhotosDTO
+import com.gonpas.nasaapis.ui.apods.ApodsFragmentDirections
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -43,7 +43,7 @@ class MarsRoverPhotosFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         val binding = DataBindingUtil.inflate<FragmentMarsRoverPhotosBinding>(inflater, R.layout.fragment_mars_rover_photos, container, false)
 
         /*val application = requireNotNull(activity).application
@@ -110,7 +110,10 @@ class MarsRoverPhotosFragment : Fragment() {
             override fun afterTextChanged(p0: Editable?) { }
         })
 
-        val adapter = MarsFotosAdapter()
+        val adapter = MarsFotosAdapter(FotoSaveListener {
+            viewModel.guardarFoto(it)
+
+        })
         binding.marsFotos.adapter = adapter
 
         viewModel.photos.observe(viewLifecycleOwner){ fotos ->
@@ -133,10 +136,25 @@ class MarsRoverPhotosFragment : Fragment() {
             }
         }
 
+        setHasOptionsMenu(true)
+
         return binding.root
     }
 
-    class MarsFotosAdapter : RecyclerView.Adapter<MarsFotosAdapter.FotoViewHolder>() {
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.mars_fotos_menu, menu)
+    }
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+//         Log.d("xxAf","item selected: ${item.itemId}")
+        when(item.itemId){
+            R.id.marsPhotosListFragment -> requireView().findNavController().navigate(
+                MarsRoverPhotosFragmentDirections.actionMarsRoverPhotosFragmentToMarsPhotosListFragment())
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    class MarsFotosAdapter(val clickListener: FotoSaveListener) : RecyclerView.Adapter<MarsFotosAdapter.FotoViewHolder>() {
         var datos = listOf<RoversPhotosDTO>()
             set(value) { field = value  }
 
@@ -147,6 +165,11 @@ class MarsRoverPhotosFragment : Fragment() {
         override fun onBindViewHolder(holder: FotoViewHolder, position: Int) {
             val item = datos[position]
             holder.binding.foto = item
+            holder.binding.saveBtn.setOnClickListener {
+                clickListener.onClick(item)
+                it.isEnabled = false
+                it.setBackgroundResource(R.color.gris_claro)
+            }
             holder.binding.executePendingBindings()
         }
 
@@ -164,4 +187,7 @@ class MarsRoverPhotosFragment : Fragment() {
 
     }
 
+    class FotoSaveListener(val clickListener: (foto: RoversPhotosDTO) -> Unit){
+        fun onClick(foto: RoversPhotosDTO) = clickListener(foto)
+    }
 }

@@ -4,14 +4,12 @@ import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.gonpas.nasaapis.R
 import com.gonpas.nasaapis.databinding.EpicItemBinding
@@ -20,7 +18,7 @@ import com.gonpas.nasaapis.domain.DomainEpic
 
 private const val TAG = "xxEtf"
 
-class EpicThumsFragment : Fragment() {
+class EpicThumbsFragment : Fragment() {
 
     private val viewModel: EpicThumbsViewModel by lazy {
         val application = requireNotNull(activity).application
@@ -59,7 +57,7 @@ class EpicThumsFragment : Fragment() {
                 val imageUrl = "https://epic.gsfc.nasa.gov/archive/natural/%s/%s/%s/png/%s.png"
                 val fecha = it.date.split(" ")[0].split("-")
                 val url = imageUrl.format(fecha[0], fecha[1], fecha[2], it.imageName)
-                findNavController().navigate(EpicThumsFragmentDirections.actionEpicThumsFragmentToEpicFullscreenFragment(url, it.date.split(" ")[1]))
+                findNavController().navigate(EpicThumbsFragmentDirections.actionEpicThumsFragmentToEpicFullscreenFragment(url, it.date.split(" ")[1]))
                 viewModel.navigated()
             }
         }
@@ -67,7 +65,7 @@ class EpicThumsFragment : Fragment() {
         viewModel.navigateToSliderEpics.observe(viewLifecycleOwner){
 //            Log.d(TAG,"Observados cambios en navigate to slider")
             if(it.isNotEmpty()){
-                findNavController().navigate(EpicThumsFragmentDirections.actionEpicThumsFragmentToEpicSliderFragment(it.toTypedArray()))
+                findNavController().navigate(EpicThumbsFragmentDirections.actionEpicThumsFragmentToEpicSliderFragment(it.toTypedArray()))
                 viewModel.navigatedToSlider()
             }
         }

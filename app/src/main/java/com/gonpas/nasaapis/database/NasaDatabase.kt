@@ -1,6 +1,7 @@
 package com.gonpas.nasaapis.database
 
 import android.content.Context
+import androidx.room.AutoMigration
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
@@ -8,9 +9,10 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 import com.gonpas.nasaapis.repository.NasaRepository
 import kotlinx.coroutines.*
 import java.util.concurrent.Executors
-import javax.security.auth.callback.Callback
 
-@Database(entities = [ApodDb::class], version = 1)
+//@Database(entities = [ApodDb::class], version = 1)
+@Database(entities = [ApodDb::class, MarsPhotoDb::class], version = 2, autoMigrations = [AutoMigration (from = 1, to = 2)])
+//@Database(entities = [ApodDb::class, MarsPhotoDb::class], version = 3, autoMigrations = [AutoMigration (from = 1, to = 2), AutoMigration(from = 2, to = 3)])
 abstract class NasaDatabase : RoomDatabase() {
     abstract val nasaDao: NasaDao
 }
@@ -46,6 +48,7 @@ fun getDatabase(context: Context): NasaDatabase {
 suspend fun initialLoad(db: NasaDatabase){
     withContext(Dispatchers.IO){
         NasaRepository(db).getRandomApods(10)
+//        NasaRepository(LocalDataSource(db), RemoteDataSource()).getRandomApods(10)
     }
 }
 

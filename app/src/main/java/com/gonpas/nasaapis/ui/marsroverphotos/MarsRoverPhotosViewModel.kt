@@ -3,15 +3,12 @@ package com.gonpas.nasaapis.ui.marsroverphotos
 import android.app.Application
 import android.util.Log
 import android.view.View
-import android.widget.RadioButton
 import android.widget.Toast
 import androidx.lifecycle.*
 import com.gonpas.nasaapis.R
 import com.gonpas.nasaapis.database.getDatabase
 import com.gonpas.nasaapis.domain.DomainRover
-import com.gonpas.nasaapis.network.Photos
-import com.gonpas.nasaapis.network.RoversPhotosDTO
-import com.gonpas.nasaapis.network.asDomainModel
+import com.gonpas.nasaapis.network.*
 import com.gonpas.nasaapis.repository.NasaRepository
 import com.gonpas.nasaapis.ui.apods.NasaApiStatus
 import kotlinx.coroutines.CancellationException
@@ -48,9 +45,15 @@ class MarsRoverPhotosViewModel(application: Application) : AndroidViewModel(appl
     val status: LiveData<NasaApiStatus>
         get() = _status
 
+    /*private val _guardarFoto = MutableLiveData<Boolean>()
+    val guardarFoto: LiveData<Boolean>
+        get() = _guardarFoto*/
+
+
     init {
         _navigateToRoverManifest.value = null
         _rover.value = "perseverance"
+//        _guardarFoto.value = false
         getLatestFotos()
     }
 
@@ -196,6 +199,28 @@ class MarsRoverPhotosViewModel(application: Application) : AndroidViewModel(appl
     }
     fun navigated(){
         _navigateToRoverManifest.value = null
+    }
+
+/*    val guardando = Transformations.map(_guardarFoto) {
+        it
+    }*/
+
+    /*fun guardarFoto(){
+        Log.d(TAG,"clicked guardar foto")
+        _guardarFoto.value = true
+    }*/
+    /*fun fotoGuardada(){
+        _guardarFoto.value = false
+    }*/
+
+    fun guardarFoto(foto: RoversPhotosDTO){
+        viewModelScope.launch {
+            savePhoto(foto)
+        }
+    }
+
+    suspend fun savePhoto(foto: RoversPhotosDTO){
+        repository.saveMarsPhoto(foto.asDatabaseModel())
     }
 }
 

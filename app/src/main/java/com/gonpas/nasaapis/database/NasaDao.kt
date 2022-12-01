@@ -29,4 +29,27 @@ interface NasaDao {
 
     @Query("select * from ApodDb where date = :date")
     suspend fun getApodByDate(date: String): ApodDb?
+
+    /**
+     * Mars photos
+     */
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertMarsPhoto(marsPhoto: MarsPhotoDb)
+
+    @Query("delete from MarsPhotoDb where marsPhotoId = :key")
+    suspend fun removeMarsPhoto(key: Int)
+
+    @Query("select * from MarsPhotoDb order by earthDate desc")
+    fun getAllMarsPhotos(): LiveData<List<MarsPhotoDb>>
+    /**
+     * Mars fotos fechas visitadas
+     */
+    /*@Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertFechaVisitada(fechasVisitadas: FechasVisitadas)
+
+    @Query("select * from FechasVisitadas group by rover order by fecha desc")
+    fun getAllFechas(): List<FechasVisitadas>
+
+    @Query("select * from FechasVisitadas where rover = :key order by fecha desc")
+    fun getFechasByRover(key: String): List<FechasVisitadas>*/
 }

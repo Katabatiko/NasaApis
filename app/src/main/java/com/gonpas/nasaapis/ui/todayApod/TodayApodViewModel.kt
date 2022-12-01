@@ -1,10 +1,6 @@
 package com.gonpas.nasaapis.ui.todayApod
 
 import android.app.Application
-import android.content.Intent
-import android.net.Uri
-import android.util.Log
-import androidx.core.content.ContextCompat.startActivity
 import androidx.lifecycle.*
 import com.gonpas.nasaapis.database.getDatabase
 import com.gonpas.nasaapis.domain.DomainApod

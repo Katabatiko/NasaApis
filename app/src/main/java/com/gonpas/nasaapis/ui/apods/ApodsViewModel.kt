@@ -2,7 +2,6 @@ package com.gonpas.nasaapis.ui.apods
 
 import android.app.Application
 import android.util.Log
-import android.widget.Toast
 import androidx.lifecycle.*
 import com.gonpas.nasaapis.database.ApodDb
 import com.gonpas.nasaapis.database.getDatabase
@@ -16,6 +15,7 @@ enum class NasaApiStatus { LOADING, ERROR, DONE }
 private const val TAG = "xxAvm"
 
 class ApodsViewModel(application: Application) : AndroidViewModel(application) {
+//class ApodsViewModel(private val nasaRepository: BaseRepository) : ViewModel() {
 
     private val nasaRepository = NasaRepository(getDatabase(application))
 
@@ -41,7 +41,7 @@ class ApodsViewModel(application: Application) : AndroidViewModel(application) {
                 throw ce    // NECESARIO PARA CANCELAR EL SCOPE DE LA RUTINA
             }catch (e: Exception){
                     Log.e(TAG, "Error de red: ${e.message}")
-                    Toast.makeText(application, "No hay acceso a Internet", Toast.LENGTH_LONG).show()
+//                    Toast.makeText(getApplication(), "No hay acceso a Internet", Toast.LENGTH_LONG).show()
             }
         }
     }
@@ -54,12 +54,12 @@ class ApodsViewModel(application: Application) : AndroidViewModel(application) {
         _navigateToTodayApod.value = null
     }
 
-    fun getApodAleatorios(count: Int = 5){
+    fun getApodsAleatorios(count: Int = 5){
  //       Log.d(TAG,"Entrando en coroutine de apods aleatorios")
         viewModelScope.launch {
             _status.value = NasaApiStatus.LOADING
             try {
-                nasaRepository.getRandomApods()
+                nasaRepository.getRandomApods(count)
             }catch (e: Exception){
                 Log.d(TAG,"Error: ${e.message}")
                 _status.value = NasaApiStatus.ERROR

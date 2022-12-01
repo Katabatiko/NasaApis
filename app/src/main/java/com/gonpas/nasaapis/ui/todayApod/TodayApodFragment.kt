@@ -1,39 +1,20 @@
 package com.gonpas.nasaapis.ui.todayApod
 
-import android.animation.Animator
-import android.animation.AnimatorListenerAdapter
-import android.animation.AnimatorSet
-import android.animation.ObjectAnimator
-import android.app.Application
 import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
-import android.graphics.Point
-import android.graphics.Rect
-import android.graphics.RectF
 import android.net.Uri
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.util.Log
 import android.view.*
-import android.view.animation.DecelerateInterpolator
-import android.webkit.WebViewClient
-import android.widget.ImageView
-import android.widget.MediaController
-import androidx.core.content.ContextCompat
-import androidx.core.content.ContextCompat.startActivity
-import androidx.core.view.children
 import androidx.fragment.app.Fragment
 import androidx.databinding.DataBindingUtil
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.RecyclerView
 import com.gonpas.nasaapis.R
 import com.gonpas.nasaapis.databinding.FragmentApodBinding
 import com.gonpas.nasaapis.domain.DomainApod
 import com.ravikoradiya.zoomableimageview.ZoomableImageView
-import java.lang.Float.max
-import java.lang.Float.min
 
 private const val TAG = "xxTaf"
 
@@ -58,7 +39,7 @@ class TodayApodFragment : Fragment() {
         Log.d(TAG, "recibido apod de fecha ${apod.date}")
         binding.domainApod = apod
 
-        val viewMoelFactory = TodayApodViewMoelFactory(apod, app)
+        val viewMoelFactory = TodayApodViewModelFactory(apod, app)
         viewModel = ViewModelProvider(this, viewMoelFactory)[TodayApodViewModel::class.java]
         binding.viewModel = viewModel
 
@@ -85,10 +66,10 @@ class TodayApodFragment : Fragment() {
     }
 
 
-    override fun onStop() {
-        super.onStop()
-//        Log.d(TAG,"onStop")
-    }
+//    override fun onStop() {
+//        super.onStop()
+////        Log.d(TAG,"onStop")
+//    }
 
     override fun onResume() {
         super.onResume()

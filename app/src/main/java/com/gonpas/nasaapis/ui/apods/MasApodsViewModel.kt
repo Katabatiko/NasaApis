@@ -3,14 +3,12 @@ package com.gonpas.nasaapis.ui.apods
 import android.app.Application
 import android.util.Log
 import android.widget.Toast
-import androidx.core.text.isDigitsOnly
 import androidx.lifecycle.*
 import com.gonpas.nasaapis.database.getDatabase
 import com.gonpas.nasaapis.domain.DomainApod
 import com.gonpas.nasaapis.repository.NasaRepository
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.launch
-import kotlin.reflect.jvm.internal.impl.resolve.constants.IntValue
 
 private const val TAG = "xxMavm"
 
@@ -68,7 +66,7 @@ class MasApodsViewModel(val app: Application) : AndroidViewModel(app) {
         if(apod != null)
             _apod.value = apod
         else
-            Toast.makeText(getApplication(), "Fecha fuera de rango", Toast.LENGTH_LONG).show()
+            Toast.makeText(app, "Fecha fuera de rango ${ fecha.format(dia.value, mes.value, anno.value) }", Toast.LENGTH_LONG).show()
     }
 
     fun navigated(){

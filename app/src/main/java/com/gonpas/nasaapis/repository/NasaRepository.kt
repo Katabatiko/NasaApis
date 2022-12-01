@@ -2,12 +2,8 @@ package com.gonpas.nasaapis.repository
 
 import android.util.Log
 import androidx.lifecycle.LiveData
-import com.gonpas.nasaapis.database.ApodDb
-import com.gonpas.nasaapis.database.NasaDatabase
-import com.gonpas.nasaapis.database.asDomainModel
-import com.gonpas.nasaapis.database.asListDomainModel
+import com.gonpas.nasaapis.database.*
 import com.gonpas.nasaapis.domain.DomainApod
-import com.gonpas.nasaapis.domain.DomainEpic
 import com.gonpas.nasaapis.network.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -73,7 +69,7 @@ class NasaRepository(private val database: NasaDatabase) {
     suspend fun removeApod(key: Long){
         withContext(Dispatchers.IO){
             val afectedRows = database.nasaDao.removeApod(key)
-//            Log.d(TAG,"elementos eliminados: $afectedRows")
+            Log.d(TAG,"elementos eliminados: $afectedRows")
         }
     }
 
@@ -156,6 +152,23 @@ class NasaRepository(private val database: NasaDatabase) {
             roverManifest = NasaApi.retrofitMarsRoversService.getRoverManifest(rover)
         }
         return roverManifest
+    }
+
+    suspend fun saveMarsPhoto(foto: MarsPhotoDb){
+        Log.d(TAG,"guardando foto en db")
+        withContext(Dispatchers.IO) {
+            database.nasaDao.insertMarsPhoto(foto)
+        }
+    }
+
+    fun getMarsPhotosFromDb(): LiveData<List<MarsPhotoDb>>{
+        return database.nasaDao.getAllMarsPhotos()
+    }
+
+    suspend fun removeMarsFoto(id: Int){
+        withContext(Dispatchers.IO){
+            database.nasaDao.removeMarsPhoto(id)
+        }
     }
 }
 

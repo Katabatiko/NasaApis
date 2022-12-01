@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.gonpas.nasaapis.domain.DomainApod
 
-class TodayApodViewMoelFactory (
+class TodayApodViewModelFactory (
     private val apod: DomainApod,
     private val application: Application
 ) : ViewModelProvider.Factory {

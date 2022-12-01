@@ -51,4 +51,12 @@ data class DomainRover(
     val totalPhotos: Int
 ): Parcelable
 
-
+@Parcelize
+data class DomainMarsPhoto(
+    val marsPhotoId: Int,
+    val sol: Int,
+    val camera: String,
+    val imgSrc: String,
+    val earthDate: String,
+    val rover: String
+): Parcelable

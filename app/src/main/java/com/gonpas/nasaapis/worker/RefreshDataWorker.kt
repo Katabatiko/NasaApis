@@ -3,7 +3,6 @@ package com.gonpas.nasaapis.worker
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
-import android.content.ContextParams
 import android.graphics.Color
 import android.os.Build
 import android.util.Log

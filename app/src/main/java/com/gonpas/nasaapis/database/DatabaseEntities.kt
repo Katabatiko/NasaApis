@@ -3,13 +3,16 @@ package com.gonpas.nasaapis.database
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.gonpas.nasaapis.domain.DomainApod
-
+import com.gonpas.nasaapis.domain.DomainMarsPhoto
+import com.gonpas.nasaapis.network.Camera
+import com.gonpas.nasaapis.network.Rover
+import com.squareup.moshi.Json
 
 
 @Entity
 data class ApodDb constructor(
     @PrimaryKey(autoGenerate = true)
-    val apodId: Long = 0L,
+    var apodId: Long = 0L,
     val title: String,
     val url: String,
     val hdurl: String,
@@ -52,3 +55,64 @@ fun List<ApodDb>.asListDomainModel(): List<DomainApod> {
         )
     }
 }
+
+
+/*@Entity
+data class FechasVisitadas constructor(
+    val rover: String,
+    val fecha: String
+)*/
+
+/*@Entity
+data class FechasVisitadas constructor(
+    val rover: String,
+    val fecha: String
+)*/
+
+/*@Entity
+data class FechasVisitadas constructor(
+    val rover: String,
+    val fecha: String
+)*/
+
+@Entity
+data class MarsPhotoDb constructor(
+    @PrimaryKey
+    val marsPhotoId: Int,
+    val sol: Int,
+    val camera: String,
+    val imgSrc: String,
+    val earthDate: String,
+    val rover: String
+)
+
+fun List<MarsPhotoDb>.asListDomainMarsPhotos(): List<DomainMarsPhoto>{
+    return map{
+        DomainMarsPhoto(
+            marsPhotoId = it.marsPhotoId,
+            sol = it.sol,
+            camera = it.camera,
+            imgSrc = it.imgSrc,
+            earthDate = it.earthDate,
+            rover = it.rover
+        )
+    }
+}
+
+/*@Entity
+data class FechasVisitadas constructor(
+    val rover: String,
+    val fecha: String
+)*/
+
+/*@Entity
+data class FechasVisitadas constructor(
+    val rover: String,
+    val fecha: String
+)*/
+
+/*@Entity
+data class FechasVisitadas constructor(
+    val rover: String,
+    val fecha: String
+)*/
