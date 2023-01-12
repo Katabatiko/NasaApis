@@ -5,9 +5,11 @@ import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.*
 import androidx.fragment.app.Fragment
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
@@ -26,6 +28,7 @@ private val OPPORTUNITY_LANDING_DATE = listOf("2004","01","25")
 private val SPIRIT_LANDING_DATE = listOf("2004","01","04")
 private val PERSEVERANCE_LANDING_DATE = listOf("2021","02","18")
 
+private val TAG = "xxMrpf"
 
 /**
  * A simple [Fragment] subclass.
@@ -138,6 +141,35 @@ class MarsRoverPhotosFragment : Fragment() {
 
         setHasOptionsMenu(true)
 
+        viewModel._fechasPerseverance.observe(viewLifecycleOwner){
+            Log.d(TAG, "fechas PERSEVERANCE: $it")
+        }
+        viewModel._fechasCuriosity.observe(viewLifecycleOwner){
+            Log.d(TAG, "fechas CURIOSITY: $it")
+        }
+        viewModel._fechasOpportunity.observe(viewLifecycleOwner){
+            Log.d(TAG, "fechas OPPORTUNITY: $it")
+        }
+        viewModel._fechasSpirit.observe(viewLifecycleOwner){
+            Log.d(TAG, "fechas SPIRIT: $it")
+        }
+
+        viewModel.showAlertDialog.observe(viewLifecycleOwner){
+            if (it){
+                val builder = AlertDialog.Builder(this.requireContext())
+                builder.setMessage("Fecha ya visitada\n¿Revisar?")
+                    .setCancelable(false)
+                    .setPositiveButton("Confirmar"){ dialog, _ ->
+                        viewModel.getFotos(true)
+                    }
+                    .setNegativeButton("Cancelar"){ dialog, _ ->
+                        dialog.dismiss()
+                    }
+                builder.create().show()
+                viewModel.alertDialogShowed()
+            }
+        }
+
         return binding.root
     }
 
@@ -150,6 +182,17 @@ class MarsRoverPhotosFragment : Fragment() {
         when(item.itemId){
             R.id.marsPhotosListFragment -> requireView().findNavController().navigate(
                 MarsRoverPhotosFragmentDirections.actionMarsRoverPhotosFragmentToMarsPhotosListFragment())
+
+            R.id.fechasVistasFragment -> {
+                val fechas = when(viewModel.rover.value){
+                    "perseverance" -> viewModel._fechasPerseverance.value
+                    "curiosity" -> viewModel._fechasCuriosity.value
+                    "opportunity" -> viewModel._fechasOpportunity.value
+                    else -> viewModel._fechasSpirit.value
+                }
+                requireView().findNavController()
+                    .navigate(MarsRoverPhotosFragmentDirections.actionMarsRoverPhotosFragmentToFechasVistasFragment2(fechas!!.toTypedArray(), viewModel.rover.value!!))
+            }
         }
         return super.onOptionsItemSelected(item)
     }

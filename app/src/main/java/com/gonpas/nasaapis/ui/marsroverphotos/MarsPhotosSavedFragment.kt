@@ -15,9 +15,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.gonpas.nasaapis.R
 import com.gonpas.nasaapis.database.asListDomainMarsPhotos
 import com.gonpas.nasaapis.databinding.FragmentMarsPhotosListBinding
-import com.gonpas.nasaapis.databinding.MarsPhotoItemListBinding
+import com.gonpas.nasaapis.databinding.MarsPhotoSavedItemBinding
 import com.gonpas.nasaapis.domain.DomainMarsPhoto
-import com.gonpas.nasaapis.ui.apods.NasaApiStatus
 
 private const val TAG = "xxMplf"
 
@@ -104,12 +103,12 @@ class MarsPhotosListFragment : Fragment(){
             }
         }
 
-        class FotoViewHolder(val binding: MarsPhotoItemListBinding) : RecyclerView.ViewHolder(binding.root){
+        class FotoViewHolder(val binding: MarsPhotoSavedItemBinding) : RecyclerView.ViewHolder(binding.root){
 
             companion object{
                 fun from(parent: ViewGroup): FotoViewHolder{
                     val layoutInflater = LayoutInflater.from(parent.context)
-                    val binding = MarsPhotoItemListBinding.inflate(layoutInflater, parent, false)
+                    val binding = MarsPhotoSavedItemBinding.inflate(layoutInflater, parent, false)
                     return FotoViewHolder(binding)
                 }
 

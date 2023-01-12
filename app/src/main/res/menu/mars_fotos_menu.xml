@@ -5,4 +5,7 @@
     <item
         android:id="@+id/marsPhotosListFragment"
         android:title="Fotos guardadas" />
+    <item
+        android:id="@+id/fechasVistasFragment"
+        android:title="Fechas vistas" />
 </menu>

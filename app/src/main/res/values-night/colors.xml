@@ -17,7 +17,7 @@
   <color name="secondaryDarkColor">#280680</color>
 
   <color name="primaryTextColor">#FFFFFF</color>
-  <color name="secondaryTextColor">#FFFFFF</color>
+  <color name="secondaryTextColor">#FF0000</color>
 
   <color name="button_background">#222222</color>
   <color name="dark_grey">#333333</color>

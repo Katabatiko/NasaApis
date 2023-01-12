@@ -1,12 +1,13 @@
 package com.gonpas.nasaapis.database
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Transformations
+import androidx.lifecycle.Transformations.map
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.gonpas.nasaapis.domain.DomainApod
+import com.gonpas.nasaapis.domain.DomainFechaVista
 import com.gonpas.nasaapis.domain.DomainMarsPhoto
-import com.gonpas.nasaapis.network.Camera
-import com.gonpas.nasaapis.network.Rover
-import com.squareup.moshi.Json
 
 
 @Entity
@@ -21,7 +22,15 @@ data class ApodDb constructor(
     val explanation: String,
     val mediaType: String,
     val serviceVersion: String
-)
+){
+    fun toTexto(): String {
+        return "$apodId·$title·$url·$hdurl·$copyright·$date·$explanation·$mediaType·$serviceVersion"
+    }
+
+    fun resetId(){
+
+    }
+}
 
 /**
  * Convert DatabaseApod to domain entities
@@ -56,25 +65,6 @@ fun List<ApodDb>.asListDomainModel(): List<DomainApod> {
     }
 }
 
-
-/*@Entity
-data class FechasVisitadas constructor(
-    val rover: String,
-    val fecha: String
-)*/
-
-/*@Entity
-data class FechasVisitadas constructor(
-    val rover: String,
-    val fecha: String
-)*/
-
-/*@Entity
-data class FechasVisitadas constructor(
-    val rover: String,
-    val fecha: String
-)*/
-
 @Entity
 data class MarsPhotoDb constructor(
     @PrimaryKey
@@ -84,7 +74,11 @@ data class MarsPhotoDb constructor(
     val imgSrc: String,
     val earthDate: String,
     val rover: String
-)
+){
+    fun toTexto(): String{
+        return "$marsPhotoId·$sol·$camera·$imgSrc·$earthDate·$rover "
+    }
+}
 
 fun List<MarsPhotoDb>.asListDomainMarsPhotos(): List<DomainMarsPhoto>{
     return map{
@@ -99,20 +93,26 @@ fun List<MarsPhotoDb>.asListDomainMarsPhotos(): List<DomainMarsPhoto>{
     }
 }
 
-/*@Entity
-data class FechasVisitadas constructor(
+@Entity(primaryKeys = ["rover", "fecha"])
+data class FechaVista constructor(
     val rover: String,
-    val fecha: String
-)*/
+    val fecha: String,       // aaaa-MM-dd
+    val sol: Int?,
+    val disponible: Boolean
+){
+    fun toTexto(): String {
+        return "$rover·$fecha·$sol·$disponible"
+    }
+}
 
-/*@Entity
-data class FechasVisitadas constructor(
-    val rover: String,
-    val fecha: String
-)*/
-
-/*@Entity
-data class FechasVisitadas constructor(
-    val rover: String,
-    val fecha: String
-)*/
+fun LiveData<List<FechaVista>>.asListDomainFechaVista(): LiveData<List<DomainFechaVista>>{
+    return map(this){ it.map {
+        DomainFechaVista(
+            rover = it.rover,
+            fecha = it.fecha,
+            sol = it.sol,
+            disponible = it.disponible
+        )
+        }
+    }
+}

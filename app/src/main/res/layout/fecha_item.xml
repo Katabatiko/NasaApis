@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="fechaVista"
+            type="com.gonpas.nasaapis.domain.DomainFechaVista" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/black"
+        android:theme="@style/Theme.Apod">
+
+        <TextView
+            android:id="@+id/item_fecha"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="6dp"
+            android:paddingStart="6dp"
+            android:textAppearance="@style/TextAppearance.Subtitle"
+            app:dateFormat="@{ fechaVista.fecha }"
+            app:setTextColor= "@{ fechaVista.disponible }"
+            tools:text="22/12/2022" />
+        <!--
+            android:textColor="@{ fechaVista.disponible ? '@color/primaryTextColor' : '@color/secondaryTextColor'  }" -->
+
+        <TextView
+            android:id="@+id/textView24"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="6dp"
+            android:text="-->   Sol: "
+            android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+
+        <TextView
+            android:id="@+id/fecha_sol"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="6dp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:text="@{ fechaVista.sol.toString() }"/>
+    </LinearLayout>
+</layout>

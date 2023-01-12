@@ -1,12 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item
-        android:id="@+id/apodsFragment"
-        android:title="@string/imagenes" />
-    <item
-        android:id="@+id/epicThumsFragment"
-        android:title="@string/imgs_tierra" />
-    <item
-        android:id="@+id/marsRoverPhotosFragment"
-        android:title="@string/imgs_marte" />
+    <group >
+        <item
+            android:id="@+id/apodsFragment"
+            android:title="@string/imagenes" />
+        <item
+            android:id="@+id/epicThumsFragment"
+            android:title="@string/imgs_tierra" />
+        <item
+            android:id="@+id/marsRoverPhotosFragment"
+            android:title="@string/imgs_marte" />
+    </group>
+    <item android:title="@string/datos_almacenados">
+        <menu>
+            <item
+                android:id="@+id/backup"
+                android:title="@string/backup" />
+            <item
+                android:id="@+id/restore"
+                android:title="@string/restore" />
+        </menu>
+    </item>
 </menu>

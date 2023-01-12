@@ -1,0 +1,171 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 3,
+    "identityHash": "dd0e90cb3b6cc55e7d230f015ebdf7e1",
+    "entities": [
+      {
+        "tableName": "ApodDb",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`apodId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `title` TEXT NOT NULL, `url` TEXT NOT NULL, `hdurl` TEXT NOT NULL, `copyright` TEXT NOT NULL, `date` TEXT NOT NULL, `explanation` TEXT NOT NULL, `mediaType` TEXT NOT NULL, `serviceVersion` TEXT NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "apodId",
+            "columnName": "apodId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "title",
+            "columnName": "title",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "url",
+            "columnName": "url",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "hdurl",
+            "columnName": "hdurl",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "copyright",
+            "columnName": "copyright",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "date",
+            "columnName": "date",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "explanation",
+            "columnName": "explanation",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "mediaType",
+            "columnName": "mediaType",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "serviceVersion",
+            "columnName": "serviceVersion",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "apodId"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "MarsPhotoDb",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`marsPhotoId` INTEGER NOT NULL, `sol` INTEGER NOT NULL, `camera` TEXT NOT NULL, `imgSrc` TEXT NOT NULL, `earthDate` TEXT NOT NULL, `rover` TEXT NOT NULL, PRIMARY KEY(`marsPhotoId`))",
+        "fields": [
+          {
+            "fieldPath": "marsPhotoId",
+            "columnName": "marsPhotoId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "sol",
+            "columnName": "sol",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "camera",
+            "columnName": "camera",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "imgSrc",
+            "columnName": "imgSrc",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "earthDate",
+            "columnName": "earthDate",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "rover",
+            "columnName": "rover",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "marsPhotoId"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "FechaVista",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`rover` TEXT NOT NULL, `fecha` TEXT NOT NULL, `sol` INTEGER, `disponible` INTEGER NOT NULL, PRIMARY KEY(`rover`, `fecha`))",
+        "fields": [
+          {
+            "fieldPath": "rover",
+            "columnName": "rover",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "fecha",
+            "columnName": "fecha",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "sol",
+            "columnName": "sol",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "disponible",
+            "columnName": "disponible",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "rover",
+            "fecha"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      }
+    ],
+    "views": [],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'dd0e90cb3b6cc55e7d230f015ebdf7e1')"
+    ]
+  }
+}

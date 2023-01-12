@@ -60,3 +60,11 @@ data class DomainMarsPhoto(
     val earthDate: String,
     val rover: String
 ): Parcelable
+
+@Parcelize
+data class DomainFechaVista(
+    val rover: String,
+    val fecha: String,       // aaaa-MM-dd
+    val sol: Int?,
+    val disponible: Boolean
+): Parcelable

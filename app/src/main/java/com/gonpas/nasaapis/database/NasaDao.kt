@@ -1,7 +1,6 @@
 package com.gonpas.nasaapis.database
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -44,12 +43,12 @@ interface NasaDao {
     /**
      * Mars fotos fechas visitadas
      */
-    /*@Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertFechaVisitada(fechasVisitadas: FechasVisitadas)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insertFechaVista(fechaVista: FechaVista)
 
-    @Query("select * from FechasVisitadas group by rover order by fecha desc")
-    fun getAllFechas(): List<FechasVisitadas>
+    @Query("select * from FechaVista group by rover order by fecha desc")
+    fun getAllFechas(): LiveData<List<FechaVista>>
 
-    @Query("select * from FechasVisitadas where rover = :key order by fecha desc")
-    fun getFechasByRover(key: String): List<FechasVisitadas>*/
+    @Query("select * from FechaVista where rover = :key order by fecha desc")
+    fun getFechasByRover(key: String): LiveData<List<FechaVista>>
 }

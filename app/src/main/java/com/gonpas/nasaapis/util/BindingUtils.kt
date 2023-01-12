@@ -1,5 +1,6 @@
 package com.gonpas.nasaapis.util
 
+import android.graphics.Color
 import android.util.Log
 import android.view.View
 import android.widget.ImageView
@@ -111,6 +112,12 @@ fun TextView.bindDateFormated(date: String){
 fun TextView.extractAndSetTime(date: String){
     var partes = date.split(" ")
     text = partes[1]
+}
+
+@BindingAdapter("setTextColor")
+fun TextView.setTextColor(blanco: Boolean){
+    if(blanco) this.setTextColor(Color.parseColor("#FFFFFF"))
+    else    this.setTextColor(Color.parseColor("#FF0000"))
 }
 
 @BindingAdapter("nasaApiStatus")

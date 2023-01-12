@@ -89,6 +89,9 @@
         <action
             android:id="@+id/action_marsRoverPhotosFragment_to_marsPhotosListFragment"
             app:destination="@id/marsPhotosListFragment" />
+        <action
+            android:id="@+id/action_marsRoverPhotosFragment_to_fechasVistasFragment2"
+            app:destination="@id/fechasVistasFragment" />
     </fragment>
     <fragment
         android:id="@+id/roverManifestFragment"
@@ -102,7 +105,8 @@
     <fragment
         android:id="@+id/epicSliderFragment"
         android:name="com.gonpas.nasaapis.ui.epic.EpicSliderFragment"
-        android:label="Animación de imágenes" >
+        android:label="Animación de imágenes"
+        tools:layout="@layout/fragment_epic_show" >
         <argument
             android:name="epicsList"
             app:argType="com.gonpas.nasaapis.domain.DomainEpic[]" />
@@ -112,4 +116,16 @@
         android:name="com.gonpas.nasaapis.ui.marsroverphotos.MarsPhotosListFragment"
         android:label="Fotos de Marte guardadas"
         tools:layout="@layout/fragment_mars_photos_list"/>
+    <fragment
+        android:id="@+id/fechasVistasFragment"
+        android:name="com.gonpas.nasaapis.ui.marsroverphotos.FechasVistasFragment"
+        android:label="Fechas Vistas del Rover"
+        tools:layout="@layout/fragment_lista_fechas_marte">
+        <argument
+            android:name="lista_fechas"
+            app:argType="com.gonpas.nasaapis.domain.DomainFechaVista[]" />
+        <argument
+            android:name="rover"
+            app:argType="string" />
+    </fragment>
 </navigation>

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
@@ -10,7 +11,8 @@
         android:id="@+id/drawer_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#1E1C1C">
+        android:background="#1E1C1C"
+        tools:openDrawer="start">
 
         <FrameLayout
             android:layout_width="match_parent"
@@ -33,7 +35,8 @@
             android:background="#000000"
             app:headerLayout="@layout/nav_header"
             app:itemTextColor="@android:color/white"
+            app:itemTextAppearance="@style/Theme.Apod"
             app:menu="@menu/drawer_menu" />
     </androidx.drawerlayout.widget.DrawerLayout>
 </layout>
-<!-- -->
+<!-- app:itemTextAp0pearence NECESARIO PARA EVITAR QUE EL MENU PIERDA LA FUENTE DESPUES DEL PRIMER USO/CLICK DE ITEM -->

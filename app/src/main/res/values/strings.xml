@@ -32,4 +32,7 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="imgs_marte">Imágenes de Marte</string>
     <string name="imgs_tierra">Imágenes de la Tierra</string>
+    <string name="backup">Respaldo de datos</string>
+    <string name="restore">Restablecer datos</string>
+    <string name="datos_almacenados">Datos almacenados</string>
 </resources>

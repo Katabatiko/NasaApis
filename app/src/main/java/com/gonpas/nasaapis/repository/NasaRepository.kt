@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import com.gonpas.nasaapis.database.*
 import com.gonpas.nasaapis.domain.DomainApod
+import com.gonpas.nasaapis.domain.DomainFechaVista
 import com.gonpas.nasaapis.network.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -17,14 +18,6 @@ class NasaRepository(private val database: NasaDatabase) {
     /******************************************************************************************************/
     /** APOD */
 
-    /**
-     * Refresh the videos stored in the offline cache.
-     *
-     * This function uses the IO dispatcher to ensure the database insert database operation
-     * happens on the IO dispatcher. By switching to the IO dispatcher using `withContext` this
-     * function is now safe to call from any thread including the Main thread.
-     *
-     */
     fun getApodsFromDb(): LiveData<List<ApodDb>> {
       //  Log.d(TAG, "Solicitando todos los apods")
         val apods = database.nasaDao.getAllApods()
@@ -33,8 +26,15 @@ class NasaRepository(private val database: NasaDatabase) {
     }
 
     /**
+     * This function uses the IO dispatcher to ensure the database insert database operation
+     * happens on the IO dispatcher. By switching to the IO dispatcher using `withContext` this
+     * function is now safe to call from any thread including the Main thread.
+     *
+     */
+
+    /**
      * Recoje el apod de hoy y lo guarda en la base de datos,
-     * comprobando si no ha sido ya recogido
+     * comprobando antes si no ha sido ya recogido
      */
     suspend fun getTodayApod() :Boolean {
         Log.d(TAG, "Solicitando el apod del servicio")
@@ -66,10 +66,17 @@ class NasaRepository(private val database: NasaDatabase) {
         return descargado
     }
 
+    suspend fun insertApod(apodDb: ApodDb): Long{
+        val newId: Long
+        withContext(Dispatchers.IO) {
+            newId = database.nasaDao.insertApod(apodDb)
+        }
+        return newId
+    }
+
     suspend fun removeApod(key: Long){
         withContext(Dispatchers.IO){
-            val afectedRows = database.nasaDao.removeApod(key)
-            Log.d(TAG,"elementos eliminados: $afectedRows")
+            database.nasaDao.removeApod(key)
         }
     }
 
@@ -169,6 +176,34 @@ class NasaRepository(private val database: NasaDatabase) {
         withContext(Dispatchers.IO){
             database.nasaDao.removeMarsPhoto(id)
         }
+    }
+    /******************************************************************************************************/
+    /******************************************************************************************************/
+    /** MARS FECHAS VISTAS */
+
+    suspend fun insertFechaVista(rover: String, fecha: String, sol: Int?, disponible: Boolean){
+        val fechaVista = FechaVista(rover, fecha, sol, disponible)
+        withContext(Dispatchers.IO){
+            database.nasaDao.insertFechaVista(fechaVista)
+        }
+    }
+
+    fun getAllMarsFechas() : LiveData<List<FechaVista>>{
+        val fechas: LiveData<List<FechaVista>> = database.nasaDao.getAllFechas()
+        return fechas
+    }
+
+    fun getFechasByRover(rover: String): LiveData<List<DomainFechaVista>>{
+        val fechas: LiveData<List<DomainFechaVista>> = database.nasaDao.getFechasByRover(rover).asListDomainFechaVista()
+//        withContext(Dispatchers.IO){
+       //     fechas = database.nasaDao.getFechasByRover(rover)
+//        Log.d(TAG, "fechasVistas de $rover: ${fechas.value}")
+//        }
+//        val allFechas: LiveData<List<String>> = fechas.map { it.map { fechaVista -> fechaVista.fecha } }
+//            .distinctUntilChanged()
+//        Log.d(TAG, "fechas de $rover: ${allFechas.value}")
+
+        return fechas
     }
 }
 

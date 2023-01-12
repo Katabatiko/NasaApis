@@ -7,6 +7,7 @@ import android.widget.Toast
 import androidx.lifecycle.*
 import com.gonpas.nasaapis.R
 import com.gonpas.nasaapis.database.getDatabase
+import com.gonpas.nasaapis.domain.DomainFechaVista
 import com.gonpas.nasaapis.domain.DomainRover
 import com.gonpas.nasaapis.network.*
 import com.gonpas.nasaapis.repository.NasaRepository
@@ -37,6 +38,18 @@ class MarsRoverPhotosViewModel(application: Application) : AndroidViewModel(appl
     val photos: LiveData<Array<RoversPhotosDTO>>
         get() = _photos
 
+    lateinit var _fechasPerseverance: LiveData<List<DomainFechaVista>>
+
+    lateinit var _fechasCuriosity: LiveData<List<DomainFechaVista>>
+
+    lateinit var _fechasOpportunity: LiveData<List<DomainFechaVista>>
+
+    lateinit var _fechasSpirit: LiveData<List<DomainFechaVista>>
+
+    private val _showAlertDialog = MutableLiveData<Boolean>()
+    val showAlertDialog: LiveData<Boolean>
+        get() = _showAlertDialog
+
     private val _navigateToRoverManifest = MutableLiveData<DomainRover?>()
     val navigateToRoverManifest: LiveData<DomainRover?>
         get() = _navigateToRoverManifest
@@ -45,14 +58,12 @@ class MarsRoverPhotosViewModel(application: Application) : AndroidViewModel(appl
     val status: LiveData<NasaApiStatus>
         get() = _status
 
-    /*private val _guardarFoto = MutableLiveData<Boolean>()
-    val guardarFoto: LiveData<Boolean>
-        get() = _guardarFoto*/
-
 
     init {
         _navigateToRoverManifest.value = null
         _rover.value = "perseverance"
+        _showAlertDialog.value = false
+        initFechasRovers()
 //        _guardarFoto.value = false
         getLatestFotos()
     }
@@ -76,13 +87,28 @@ class MarsRoverPhotosViewModel(application: Application) : AndroidViewModel(appl
             R.id.perseverance -> "perseverance"
             R.id.curiosity -> "curiosity"
             R.id.opportunity -> "opportunity"
-            R.id.spirit -> "spirit"
-            else -> "Rover desconocido"
+            else -> "spirit"
         }
         _anno.value = ""
         _mes.value =  ""
         _dia.value =  ""
     }
+
+    fun initFechasRovers(){
+        _fechasPerseverance = repository.getFechasByRover("perseverance")
+//        Log.d(TAG, "fechas Perseverance: ${_fechasPerseverance.value}")
+        _fechasCuriosity = repository.getFechasByRover("curiosity")
+//        Log.d(TAG, "fechas Curiosity: ${_fechasCuriosity.value}")
+        _fechasOpportunity = repository.getFechasByRover("opportunity")
+//        Log.d(TAG, "fechas Opportunity: ${_fechasOpportunity.value}")
+        _fechasSpirit = repository.getFechasByRover("spirit")
+//        Log.d(TAG, "fechas Spirit ${_fechasSpirit.value}")
+    }
+
+    fun alertDialogShowed(){
+        _showAlertDialog.value = false
+    }
+
     fun getLatestFotos(){
         _status.value = NasaApiStatus.LOADING
         viewModelScope.launch {
@@ -102,10 +128,13 @@ class MarsRoverPhotosViewModel(application: Application) : AndroidViewModel(appl
     suspend fun getLatestMarsFotos(){
         try {
             _photos.value = repository.getLatestMarsRoversPhotos(rover.value!!).photos
-            val fecha = photos.value?.get(0)?.earthDate?.split("-")
-            _anno.value = fecha?.get(0)
-            _mes.value = fecha?.get(1)
-            _dia.value = fecha?.get(2)
+            val fecha = photos.value?.get(0)?.earthDate
+            // registro de fecha vista
+            repository.insertFechaVista(rover.value!!, fecha!!, photos.value!!.get(0).sol, true)
+            val partes = fecha?.split("-")
+            _anno.value = partes?.get(0)
+            _mes.value = partes?.get(1)
+            _dia.value = partes?.get(2)
         }catch (ce: CancellationException) {
             throw ce    // NECESARIO PARA CANCELAR EL SCOPE DE LA RUTINA
         }catch (e: Exception){
@@ -115,8 +144,8 @@ class MarsRoverPhotosViewModel(application: Application) : AndroidViewModel(appl
 
     }
 
-    fun getFotos(){
-        if (dia.value.isNullOrBlank() && mes.value.isNullOrBlank() && anno.value.isNullOrBlank()){
+    fun getFotos(force: Boolean = false){
+        if (dia.value.isNullOrBlank() || mes.value.isNullOrBlank() || anno.value.isNullOrBlank()){
             _status.value = NasaApiStatus.LOADING
             viewModelScope.launch {
                 try {
@@ -134,23 +163,31 @@ class MarsRoverPhotosViewModel(application: Application) : AndroidViewModel(appl
             if (dia.value?.let { Integer.parseInt(it) } in 1..31 &&
                 mes.value?.let { Integer.parseInt(it) } in 1..12 &&
                 anno.value?.let { Integer.parseInt(it) } in 2004..2022) {
-                        _status.value = NasaApiStatus.LOADING
-                        viewModelScope.launch {
-                            try {
-                                getMarsPhotos()
-                                _status.value = NasaApiStatus.DONE
-                            } catch (ce: CancellationException) {
-                                throw ce
-                            } catch (e: Exception) {
-                                _status.value = NasaApiStatus.ERROR
-                                Log.e(TAG, "error de descarga: ${e.message}")
-                                Toast.makeText(
-                                    getApplication(),
-                                    "Sin acceso a internet\n${e.message}",
-                                    Toast.LENGTH_LONG
-                                ).show()
-                            }
-                        }
+                    if(!testFecha("${anno.value}-${mes.value}-${dia.value}") || force){
+                                _status.value = NasaApiStatus.LOADING
+                                viewModelScope.launch {
+                                    try {
+                                        getMarsPhotos()
+                                        _status.value = NasaApiStatus.DONE
+                                    } catch (ce: CancellationException) {
+                                        throw ce
+                                    } catch (e: Exception) {
+                                        _status.value = NasaApiStatus.ERROR
+                                        Log.e(TAG, "error de descarga: ${e.message}")
+                                        Toast.makeText(
+                                            getApplication(),
+                                            "Sin acceso a internet\n${e.message}",
+                                            Toast.LENGTH_LONG
+                                        ).show()
+                                    }
+                                }
+                        Log.d(TAG,"Fecha ya visitada")
+                    }
+                    else{
+                        Log.d(TAG,"Fecha nueva")
+                        _showAlertDialog.value = true
+                    }
+
             }else{
                 Toast.makeText(getApplication(),"Fecha no válida", Toast.LENGTH_LONG).show()
             }
@@ -160,16 +197,46 @@ class MarsRoverPhotosViewModel(application: Application) : AndroidViewModel(appl
     suspend fun getMarsPhotos(){
         try {
             val fotos = repository.getMarsPhotos(rover.value!!, "${anno.value}-${mes.value}-${dia.value}")
-            if (fotos.photos.isNotEmpty())
+            if (fotos.photos.isNotEmpty()) {
+                repository.insertFechaVista(rover.value!!, "${anno.value}-${mes.value}-${dia.value}",fotos.photos.get(0).sol, true )
                 _photos.value = fotos.photos
-            else
+            }
+            else {
+                repository.insertFechaVista(rover.value!!, "${anno.value}-${mes.value}-${dia.value}",null, false )
                 Toast.makeText(getApplication(), "Fecha no disponible", Toast.LENGTH_LONG).show()
+            }
         }catch (ce: CancellationException) {
             throw ce
         } catch (e: Exception) {
             Log.e(TAG, "error de descarga: ${e.message}")
-            Toast.makeText(getApplication(), "Sin acceso a Internet", Toast.LENGTH_LONG).show()
+            Toast.makeText(getApplication(), "Sin acceso a Internet \n${e.message}", Toast.LENGTH_LONG).show()
         }
+    }
+
+    fun testFecha(fecha: String): Boolean{
+        return when(rover.value){
+            "perseverance" -> {
+                transformListFechaVistaToListFechas(_fechasPerseverance).contains(fecha)
+            }
+            "opportunity" -> {
+                transformListFechaVistaToListFechas(_fechasOpportunity).contains(fecha)
+            }
+            "curiosity" -> {
+                transformListFechaVistaToListFechas(_fechasCuriosity).contains(fecha)
+            }
+            else -> {
+                transformListFechaVistaToListFechas(_fechasSpirit).contains(fecha)
+            }
+        }
+    }
+
+    fun transformListFechaVistaToListFechas(lista: LiveData<List<DomainFechaVista>>) : List<String>{
+        var listaFechas = listOf <String>()
+
+        for (item in lista.value!!){
+            listaFechas = listaFechas.plus(item.fecha)
+        }
+        return listaFechas
     }
 
     suspend fun getRoverManifest(){

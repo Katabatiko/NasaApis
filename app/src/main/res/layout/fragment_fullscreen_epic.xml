@@ -8,7 +8,8 @@
     </data>
 
     <FrameLayout
-        style="@style/Theme.Apod.NoActionBar"
+        android:theme="@style/Theme.Apod.NoActionBar"
+        android:background="@android:color/black"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fitsSystemWindows="true">
