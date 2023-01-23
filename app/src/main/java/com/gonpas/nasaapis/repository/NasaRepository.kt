@@ -1,5 +1,6 @@
 package com.gonpas.nasaapis.repository
 
+import android.annotation.SuppressLint
 import android.util.Log
 import androidx.lifecycle.LiveData
 import com.gonpas.nasaapis.database.*
@@ -19,10 +20,9 @@ class NasaRepository(private val database: NasaDatabase) {
     /** APOD */
 
     fun getApodsFromDb(): LiveData<List<ApodDb>> {
-      //  Log.d(TAG, "Solicitando todos los apods")
-        val apods = database.nasaDao.getAllApods()
-//        Log.d(TAG,"Total apods recibidos: ${apods.value?.size ?: 0}")
-        return apods
+        //  Log.d(TAG, "Solicitando todos los apods")
+        //        Log.d(TAG,"Total apods recibidos: ${apods.value?.size ?: 0}")
+        return database.nasaDao.getAllApods()
     }
 
     /**
@@ -36,6 +36,7 @@ class NasaRepository(private val database: NasaDatabase) {
      * Recoje el apod de hoy y lo guarda en la base de datos,
      * comprobando antes si no ha sido ya recogido
      */
+    @SuppressLint("SimpleDateFormat")
     suspend fun getTodayApod() :Boolean {
         Log.d(TAG, "Solicitando el apod del servicio")
         var descargado = false
@@ -90,7 +91,7 @@ class NasaRepository(private val database: NasaDatabase) {
         return lastApod
     }
 
-    suspend fun getApodByDate(date: String): DomainApod?{
+    suspend fun getApodByDate(date: String): DomainApod{
         var apodFromDb = database.nasaDao.getApodByDate(date)
         if(apodFromDb == null) {
             withContext(Dispatchers.IO) {
@@ -116,20 +117,20 @@ class NasaRepository(private val database: NasaDatabase) {
 /******************************************************************************************************/
 /******************************************************************************************************/
     /** EPIC */
-    suspend fun getLastEpic(): List<EpicDTO>{
+    suspend fun getLastEpic(collection: String): List<EpicDTO>{
         var lista: List<EpicDTO>
         withContext(Dispatchers.IO) {
-            lista =  NasaApi.retrofitEpicService.getLastNaturalEpic()
+            lista =  NasaApi.retrofitEpicService.getLastsEpic(collection)
 //        Log.d("xxNr","dentro rutina Epics recibidos: $lista")
         }
 //        Log.d("xxNr","fuera rutina Epics recibidos: $lista")
         return lista
     }
 
-    suspend fun getNaturalEpicByDate(date: String): List<EpicDTO>{
+    suspend fun getEpicsByDate(collection: String, date: String): List<EpicDTO>{
         var lista: List<EpicDTO>
         withContext(Dispatchers.IO){
-            lista = NasaApi.retrofitEpicService.getNaturalEpicByDate(date)
+            lista = NasaApi.retrofitEpicService.getEpicsByDate(collection, date = date)
 //            Log.d("xxNr","IN rutina Epics by date recibidos: $lista")
         }
 //        Log.d("xxNr","OUT rutina Epics recibidos: $lista")
@@ -188,22 +189,20 @@ class NasaRepository(private val database: NasaDatabase) {
         }
     }
 
-    fun getAllMarsFechas() : LiveData<List<FechaVista>>{
-        val fechas: LiveData<List<FechaVista>> = database.nasaDao.getAllFechas()
-        return fechas
+    fun getAllMarsFechas(): LiveData<List<FechaVista>> {
+        return database.nasaDao.getAllFechas()
     }
 
-    fun getFechasByRover(rover: String): LiveData<List<DomainFechaVista>>{
-        val fechas: LiveData<List<DomainFechaVista>> = database.nasaDao.getFechasByRover(rover).asListDomainFechaVista()
-//        withContext(Dispatchers.IO){
-       //     fechas = database.nasaDao.getFechasByRover(rover)
+    fun getFechasByRover(rover: String): LiveData<List<DomainFechaVista>> {
+        //        withContext(Dispatchers.IO){
+        //     fechas = database.nasaDao.getFechasByRover(rover)
 //        Log.d(TAG, "fechasVistas de $rover: ${fechas.value}")
 //        }
 //        val allFechas: LiveData<List<String>> = fechas.map { it.map { fechaVista -> fechaVista.fecha } }
 //            .distinctUntilChanged()
 //        Log.d(TAG, "fechas de $rover: ${allFechas.value}")
 
-        return fechas
+        return database.nasaDao.getFechasByRover(rover).asListDomainFechaVista()
     }
 }
 

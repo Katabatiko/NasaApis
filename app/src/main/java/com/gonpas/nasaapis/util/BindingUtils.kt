@@ -49,12 +49,9 @@ fun bindZoomImage(zoomImage: ZoomableImageView, imgUrl: String){
 }
 
 @BindingAdapter("setThumb")
-fun setThumbnail(imgView: ImageView, epic: DomainEpic){
-    var url = "https://epic.gsfc.nasa.gov/archive/natural/%s/%s/%s/thumbs/%s.jpg"
-    val fecha = epic.date.split(" ")[0].split("-")
-    val fullUrl = url.format(fecha[0], fecha[1],fecha[2], epic.imageName)
-//     Log.d("xxBu", "thumbUrl: $fullUrl")
-    fullUrl.let {
+fun setThumbnail(imgView: ImageView, url: String){
+
+    url.let {
         // para convertir la URL en URI
         val imgUri = it.toUri().buildUpon().scheme("https").build()
         // invocar glide para cargar la imagen
@@ -68,11 +65,11 @@ fun setThumbnail(imgView: ImageView, epic: DomainEpic){
     }
 }
 
-@BindingAdapter("setBigImage")
-fun setBigImage(imgView: ImageView, epic: DomainEpic){
-    var url = "https://epic.gsfc.nasa.gov/archive/natural/%s/%s/%s/png/%s.png"
+@BindingAdapter( "setBigImage", "collection" )
+fun setBigImage(imgView: ImageView, epic: DomainEpic, coleccion: String){
+    var url = "https://epic.gsfc.nasa.gov/archive/%s/%s/%s/%s/png/%s.png"
     val fecha = epic.date.split(" ")[0].split("-")
-    val fullUrl = url.format(fecha[0], fecha[1],fecha[2], epic.imageName)
+    val fullUrl = url.format(coleccion, fecha[0], fecha[1],fecha[2], epic.imageName)
 //     Log.d("xxBu", "bigImage: $fullUrl")
     fullUrl.let {
         // para convertir la URL en URI

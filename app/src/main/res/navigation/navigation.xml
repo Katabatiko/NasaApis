@@ -110,6 +110,9 @@
         <argument
             android:name="epicsList"
             app:argType="com.gonpas.nasaapis.domain.DomainEpic[]" />
+        <argument
+            android:name="coleccion"
+            app:argType="string" />
     </fragment>
     <fragment
         android:id="@+id/marsPhotosListFragment"

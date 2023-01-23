@@ -1,11 +1,9 @@
 package com.gonpas.nasaapis.network
 
-import androidx.lifecycle.LiveData
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
-import retrofit2.create
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -96,11 +94,11 @@ interface NasaApiService {
     /**
      * EPIC: Earth Polychromatic Imaging Camera
       */
-    @GET("natural")
-    suspend fun getLastNaturalEpic(@Query("api_key") api_key: String = API_KEY): List<EpicDTO>
+    @GET("{collection}")
+    suspend fun getLastsEpic(@Path("collection") collection: String, @Query("api_key") api_key: String = API_KEY): List<EpicDTO>
 
-    @GET("natural/date/{date}")
-    suspend fun getNaturalEpicByDate(@Path("date") date: String, @Query("api_key") api_key: String = API_KEY): List<EpicDTO>
+    @GET("{collection}/date/{date}")
+    suspend fun getEpicsByDate(@Path("collection") collection: String, @Path("date") date: String, @Query("api_key") api_key: String = API_KEY): List<EpicDTO>
 
     /**
      * Pics from Mars

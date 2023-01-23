@@ -7,6 +7,9 @@
         <variable
             name="epic"
             type="com.gonpas.nasaapis.domain.DomainEpic" />
+        <variable
+            name="viewModel"
+            type="com.gonpas.nasaapis.ui.epic.EpicThumbsViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -19,7 +22,7 @@
             android:layout_height="120dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:setThumb="@{ epic }"
+            app:setThumb="@{ viewModel.getUrl(epic) }"
             android:contentDescription="@{ epic.caption }" />
 
         <TextView

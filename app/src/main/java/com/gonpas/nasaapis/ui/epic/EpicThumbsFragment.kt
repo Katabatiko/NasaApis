@@ -1,5 +1,6 @@
 package com.gonpas.nasaapis.ui.epic
 
+import android.annotation.SuppressLint
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.text.Editable
@@ -27,23 +28,27 @@ class EpicThumbsFragment : Fragment() {
     }
 
 
+    @SuppressLint("NotifyDataSetChanged")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         val binding = DataBindingUtil.inflate<FragmentEpicThumbsBinding>(inflater, R.layout.fragment_epic_thumbs, container, false)
 
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
 
+        val btnColeccion = binding.btnCollection
+        btnColeccion.setOnCheckedChangeListener { buttonView, isChecked ->
+            viewModel.setCollection(isChecked)
+            viewModel.getLastEpic()
+        }
+
+
         val adapter = EpicThumbsAdapter(EpicThumbsAdapter.OnClickListener{
             viewModel.goFullscreen(it)
-        })
+        }, viewModel)
         binding.epicsThumbs.adapter = adapter
-        /*binding.root.findViewById<RecyclerView>(R.id.epics_thumbs).apply {
-            this.layoutManager = LinearLayoutManager(context)
-         //   this.adapter = adapter
-        }*/
 
         viewModel.epics.observe(viewLifecycleOwner){list ->
 //            Log.d("xxEtf","it size: ${list.size}")
@@ -52,11 +57,15 @@ class EpicThumbsFragment : Fragment() {
 //            Log.d(TAG,"adapter datos size: ${adapter.datos.size}")
         }
 
+        /*viewModel.coleccion.observe(viewLifecycleOwner){
+            viewModel.getLastEpic()
+        }*/
+
         viewModel.navigateToFullScreenEpic.observe(viewLifecycleOwner){
             if (it != null){
-                val imageUrl = "https://epic.gsfc.nasa.gov/archive/natural/%s/%s/%s/png/%s.png"
+                val imageUrl = "https://epic.gsfc.nasa.gov/archive/%s/%s/%s/%s/png/%s.png"
                 val fecha = it.date.split(" ")[0].split("-")
-                val url = imageUrl.format(fecha[0], fecha[1], fecha[2], it.imageName)
+                val url = imageUrl.format(viewModel.coleccion.value, fecha[0], fecha[1], fecha[2], it.imageName)
                 findNavController().navigate(EpicThumbsFragmentDirections.actionEpicThumsFragmentToEpicFullscreenFragment(url, it.date.split(" ")[1]))
                 viewModel.navigated()
             }
@@ -65,7 +74,7 @@ class EpicThumbsFragment : Fragment() {
         viewModel.navigateToSliderEpics.observe(viewLifecycleOwner){
 //            Log.d(TAG,"Observados cambios en navigate to slider")
             if(it.isNotEmpty()){
-                findNavController().navigate(EpicThumbsFragmentDirections.actionEpicThumsFragmentToEpicSliderFragment(it.toTypedArray()))
+                findNavController().navigate(EpicThumbsFragmentDirections.actionEpicThumsFragmentToEpicSliderFragment(it.toTypedArray(), viewModel.coleccion.value!!))
                 viewModel.navigatedToSlider()
             }
         }
@@ -106,7 +115,7 @@ class EpicThumbsFragment : Fragment() {
     }
 }
 
-class EpicThumbsAdapter(private val onClickListener: OnClickListener) : RecyclerView.Adapter<EpicThumbsAdapter.EpicViewHolder>() {
+class EpicThumbsAdapter(private val onClickListener: OnClickListener, val viewModel: EpicThumbsViewModel) : RecyclerView.Adapter<EpicThumbsAdapter.EpicViewHolder>() {
 
     var datos = listOf<DomainEpic>()
         set(value) { field = value }
@@ -123,6 +132,7 @@ class EpicThumbsAdapter(private val onClickListener: OnClickListener) : Recycler
             onClickListener.onClick(item)
         }
         holder.binding.epic = item
+        holder.binding.viewModel = viewModel
        // Log.d(TAG,"item: ${item.imageName}")
         holder.binding.executePendingBindings()
     }

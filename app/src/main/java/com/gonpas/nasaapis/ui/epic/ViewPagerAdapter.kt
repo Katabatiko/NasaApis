@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.gonpas.nasaapis.databinding.SliderItemBinding
 import com.gonpas.nasaapis.domain.DomainEpic
 
-class ViewPagerAdapter(private val imageList: List<DomainEpic>, private val condition: ConditionViewPager) :
+class ViewPagerAdapter(private val imageList: List<DomainEpic>, private val coleccion: String, private val condition: ConditionViewPager) :
     RecyclerView.Adapter<ViewPagerAdapter.ViewPagerViewHolder>() {
 
     class ViewPagerViewHolder(val binding: SliderItemBinding) : RecyclerView.ViewHolder(binding.root){
@@ -18,8 +18,9 @@ class ViewPagerAdapter(private val imageList: List<DomainEpic>, private val cond
             }
         }
 
-        fun bind(item: DomainEpic){
+        fun bind(item: DomainEpic, coleccion: String){
             binding.epic = item
+            binding.coleccion = coleccion
             binding.executePendingBindings()
         }
     }
@@ -31,7 +32,7 @@ class ViewPagerAdapter(private val imageList: List<DomainEpic>, private val cond
 
     override fun onBindViewHolder(holder: ViewPagerViewHolder, position: Int) {
         condition.condition(position, imageList.size)
-        holder.bind(imageList[position])
+        holder.bind(imageList[position], coleccion)
     }
 
     override fun getItemCount(): Int {

@@ -2,7 +2,6 @@ package com.gonpas.nasaapis.ui.epic
 
 import android.app.Application
 import android.util.Log
-import android.widget.TextView
 import android.widget.Toast
 import androidx.lifecycle.*
 import com.gonpas.nasaapis.R
@@ -23,6 +22,10 @@ class EpicThumbsViewModel(application: Application) : AndroidViewModel(applicati
     private var _epics = MutableLiveData<List<DomainEpic>>()
     val  epics: LiveData<List<DomainEpic>>
         get() = _epics
+
+    private var _coleccion = MutableLiveData<String>()
+    val coleccion: LiveData<String>
+        get() = _coleccion
 
     private var _anno = MutableLiveData<String>()
     val anno: LiveData<String>
@@ -53,14 +56,23 @@ class EpicThumbsViewModel(application: Application) : AndroidViewModel(applicati
 
 
     init {
+        _coleccion.value = "natural"
         getLastEpic()
+    }
+
+    fun setCollection(enhanced: Boolean){
+//        val cambio = coleccion.value == en
+        _coleccion.value = if(enhanced)  "enhanced" else "natural"
+        Log.d(TAG,"coleccion: ${coleccion.value}")
     }
 
     fun getLastEpic(){
         _status.value = NasaApiStatus.LOADING
+
+        Log.d(TAG,"coleccion: ${_coleccion.value}")
         viewModelScope.launch {
             try {
-                _epics.value = repository.getLastEpic().asListDomainEpic()
+                _epics.value = repository.getLastEpic(_coleccion.value!!).asListDomainEpic()
          //       Log.d(TAG,"last _epics size: ${_epics.value?.size}")
                 val fecha = _epics.value!![0].date.split(" ")[0].split("-")
        //         Log.d(TAG,"fecha: $fecha")
@@ -92,27 +104,37 @@ class EpicThumbsViewModel(application: Application) : AndroidViewModel(applicati
     }
 
     fun getEpicByDate(){
+        _status.value = NasaApiStatus.LOADING
         val date = "%s-%s-%s".format(anno.value, mes.value, dia.value)
-       // Log.d(TAG,"fecha formateada: $date")
+        Log.d(TAG,"fecha formateada: $date")
+        Log.d(TAG,"coleccion: ${_coleccion.value}")
         viewModelScope.launch {
             try {
-                _epics.value = repository.getNaturalEpicByDate(date).asListDomainEpic()
+                _epics.value = repository.getEpicsByDate(_coleccion.value!!, date).asListDomainEpic()
      //           Log.d(TAG,"by date _epics size: ${_epics.value?.size}")
                 if (!_epics.value.isNullOrEmpty()){
                     val fecha = _epics.value!![0].date.split(" ")[0].split("-")
                     _anno.value = fecha[0]
                     _mes.value = fecha[1]
                     _dia.value = fecha[2]
+                    _status.value = NasaApiStatus.DONE
                 }else{
                     Toast.makeText(app, "Fecha no disponible", Toast.LENGTH_LONG).show()
                 }
             }catch (ce: CancellationException) {
                 throw ce    // NECESARIO PARA CANCELAR EL SCOPE DE LA RUTINA
             }catch (e: Exception){
+                _status.value = NasaApiStatus.ERROR
                 Log.e(TAG, "Error de red: ${e.message}")
                 Toast.makeText(app, "${ app.getString(R.string.no_network) } \n ${e.message}", Toast.LENGTH_LONG).show()
             }
         }
+    }
+
+    fun getUrl(epic: DomainEpic): String {
+        var url = "https://epic.gsfc.nasa.gov/archive/%s/%s/%s/%s/thumbs/%s.jpg"
+        val fecha = epic.date.split(" ")[0].split("-")
+        return url.format(coleccion.value, fecha[0], fecha[1],fecha[2], epic.imageName)
     }
 
     fun goFullscreen(epic: DomainEpic){

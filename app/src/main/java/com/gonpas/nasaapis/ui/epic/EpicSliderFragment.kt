@@ -20,21 +20,23 @@ private const val TAG = "xxEsf"
 class EpicSliderFragment : Fragment(), ViewPagerAdapter.ConditionViewPager {
 
     lateinit var imageList: List<DomainEpic>
+    lateinit var coleccion: String
     lateinit var viewPager: ViewPager2
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         val binding = DataBindingUtil.inflate<EpicsAnimationBinding>(inflater, R.layout.epics_animation,  container, false)
 
         viewPager = binding.viewPager
 
         // recogiendo la lista de los argumentos
         imageList = EpicSliderFragmentArgs.fromBundle(requireArguments()).epicsList.toList()
+        coleccion = EpicSliderFragmentArgs.fromBundle(requireArguments()).coleccion
 
-        viewPager.adapter = ViewPagerAdapter(imageList, this)
+        viewPager.adapter = ViewPagerAdapter(imageList, coleccion,this)
         viewPager.orientation = ViewPager2.ORIENTATION_HORIZONTAL
         viewPager.offscreenPageLimit = 2
         viewPager.setPageTransformer(AlphaPageTransformer())
@@ -65,7 +67,6 @@ class EpicSliderFragment : Fragment(), ViewPagerAdapter.ConditionViewPager {
 
 private const val MIN_SCALE = 0.5f
 
-@RequiresApi(21)
 class AlphaPageTransformer : ViewPager2.PageTransformer {
     /** During the depth animation, the default animation (a screen slide) still takes place,
      * so you must counteract the screen slide with a negative X translation. For example:

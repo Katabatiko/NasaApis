@@ -35,4 +35,10 @@
     <string name="backup">Respaldo de datos</string>
     <string name="restore">Restablecer datos</string>
     <string name="datos_almacenados">Datos almacenados</string>
+    <string name="boton_play">Botón play</string>
+    <string name="enhanced">Mejorada</string>
+    <string name="animacion">Animación</string>
+    <string name="mejorada">Mejorada</string>
+    <string name="natural">Natural</string>
+    <string name="epic_caption">This image was taken by NASA\'s EPIC camera onboard the\nNOAA DSCOVR spacecraft</string>
 </resources>

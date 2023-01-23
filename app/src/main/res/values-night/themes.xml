@@ -29,4 +29,13 @@
         <item name="paddingEnd">6dp</item>
         <item name="android:paddingRight">6dp</item>
     </style>
+    <style name="ToggleButtonStyle" parent="Widget.MaterialComponents.Button.TextButton">
+
+        <item name="backgroundTint">@color/dark_grey</item>
+        <item name="android:textColor">@color/gris_claro</item>
+        <item name="paddingStart">6dp</item>
+        <item name="android:paddingLeft">6dp</item>
+        <item name="paddingEnd">6dp</item>
+        <item name="android:paddingRight">6dp</item>
+    </style>
 </resources>

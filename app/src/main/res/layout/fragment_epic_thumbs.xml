@@ -4,9 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-        <variable
+        <!--<variable
             name="epic"
-            type="com.gonpas.nasaapis.domain.DomainEpic" />
+            type="com.gonpas.nasaapis.domain.DomainEpic" />-->
         <variable
             name="viewModel"
             type="com.gonpas.nasaapis.ui.epic.EpicThumbsViewModel" />
@@ -19,21 +19,6 @@
         android:theme="@style/Theme.Apod">
 
         <TextView
-            android:id="@+id/caption"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="16dp"
-            android:text="@{ epic.caption }"
-            android:textAlignment="center"
-            android:theme="@style/Theme.Apod"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/year"
-            tools:text="This image was taken by NASA's EPIC camera onboard the\nNOAA DSCOVR spacecraft" />
-
-        <TextView
             android:id="@+id/textView2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -41,8 +26,7 @@
             android:layout_marginEnd="16dp"
             android:text="@string/buscar_imagen_por_fecha"
             android:textAppearance="@style/TextAppearance.Subtitle"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintEnd_toStartOf="@+id/btn_collection"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -51,7 +35,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="16dp"
             android:text="Dia:"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView2" />
@@ -61,6 +45,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
             android:hint="20"
             android:inputType="number"
             android:maxLength="2"
@@ -73,7 +58,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="16dp"
             android:text="Mes:"
             app:layout_constraintStart_toEndOf="@+id/day"
             app:layout_constraintTop_toBottomOf="@+id/textView2" />
@@ -83,6 +68,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
             android:hint="06"
             android:inputType="number"
             android:maxLength="2"
@@ -95,7 +81,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="16dp"
             android:text="Año:"
             app:layout_constraintStart_toEndOf="@+id/month"
             app:layout_constraintTop_toBottomOf="@+id/textView2" />
@@ -105,6 +91,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
             android:ems="3"
             android:hint="1995"
             android:inputType="number"
@@ -118,6 +105,8 @@
             style="@style/ButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:background="@color/dark_grey"
             android:onClick="@{ () -> viewModel.getEpicByDate() }"
             android:text="Descargar"
             app:backgroundTint="@color/button_background"
@@ -129,7 +118,7 @@
             android:id="@+id/epics_thumbs"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="24dp"
             android:layout_marginBottom="4dp"
             android:paddingStart="8dp"
             android:paddingEnd="8dp"
@@ -138,8 +127,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/caption"
-            app:layout_constraintVertical_bias="0.0"
+            app:layout_constraintTop_toBottomOf="@+id/year"
             app:spanCount="3"
             tools:itemCount="16"
             tools:listitem="@layout/epic_item" />
@@ -152,7 +140,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/caption"
+            app:layout_constraintTop_toBottomOf="@+id/year"
             app:nasaApiStatus="@{viewModel.status}" />
 
         <Button
@@ -163,11 +151,37 @@
             android:layout_marginBottom="8dp"
             android:enabled="@{ viewModel.btnAnimationEnable }"
             android:onClick="@{ () -> viewModel.goSlider() }"
-            android:text="Animación"
+            android:text="@string/animacion"
             app:backgroundTint="@color/button_background"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
+        <!--            android:onCheckedChanged="@{ (_, isChecked) -> viewModel.setCollection(isChecked) }"-->
+
+        <ToggleButton
+            android:id="@+id/btn_collection"
+            style="@style/ToggleButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_marginEnd="4dp"
+            android:background="@color/dark_grey"
+            android:textOff="@string/natural"
+            android:textOn="@string/mejorada"
+            app:backgroundTint="@color/button_background"
+            app:layout_constraintBottom_toBottomOf="@+id/textView2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/textView2"
+            app:layout_constraintTop_toTopOf="@+id/textView2" />
+
+        <!--<com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/switch1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/mejorada"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/btn_animacion"
+            app:layout_constraintTop_toBottomOf="@+id/epics_thumbs" />-->
 
         <!--
 

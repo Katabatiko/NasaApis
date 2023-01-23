@@ -9,6 +9,9 @@
         <variable
             name="epic"
             type="com.gonpas.nasaapis.domain.DomainEpic" />
+        <variable
+            name="coleccion"
+            type="String" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -40,6 +43,7 @@
             android:layout_height="0dp"
             android:layout_centerInParent="true"
             app:setBigImage="@{ epic }"
+            app:collection="@{ coleccion }"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
