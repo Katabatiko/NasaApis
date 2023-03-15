@@ -9,6 +9,7 @@ import com.gonpas.nasaapis.domain.DomainApod
 import com.gonpas.nasaapis.repository.NasaRepository
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
 
 private const val TAG = "xxMavm"
 
@@ -34,11 +35,15 @@ class MasApodsViewModel(val app: Application) : AndroidViewModel(app) {
         get() = _anno
 
     fun buscarPorFecha(){
+        val sdf = SimpleDateFormat("yyyy")
+        val todayYear = sdf.format(System.currentTimeMillis())
+//        Log.d(TAG, "Año: $todayYear")
+        val thisYear = Integer.parseInt(todayYear)
    //     Log.d(TAG,"Buscar por fecha: ${String.format(fecha, anno.value, mes.value, dia.value)}")
         if (dia.value?.let { Integer.parseInt(it) } in 1..31){
             if (mes.value?.let { Integer.parseInt(it) } in 1..12){
-                if (anno.value?.let { Integer.parseInt(it) } in 1995..2022){
-//                    Log.d(TAG,"fecha: ${fecha.format(anno.value, mes.value, dia.value)}")
+                if (anno.value?.let { Integer.parseInt(it) } in 1995..thisYear){
+                    Log.d(TAG,"fecha: ${fecha.format(anno.value, mes.value, dia.value)}")
                     viewModelScope.launch {
                         try {
                             buscar()
@@ -59,7 +64,6 @@ class MasApodsViewModel(val app: Application) : AndroidViewModel(app) {
     fun setMes(mes: String){    _mes.value = mes    }
     fun setAnno(anno: String){  _anno.value = anno  }
 
-//    val buscarBtnEnable = !_dia.value.isNullOrBlank()  && !_mes.value.isNullOrBlank() && !_anno.value.isNullOrBlank()
 
     suspend fun buscar(){
         val apod = repository.getApodByDate(fecha.format(anno.value, mes.value, dia.value))

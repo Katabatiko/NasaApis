@@ -6,7 +6,7 @@
     <data>
         <variable
             name="viewModel"
-            type="com.gonpas.nasaapis.ui.marsroverphotos.MarsPhotosListViewModel" />
+            type="com.gonpas.nasaapis.ui.marsroverphotos.MarsRoverPhotosViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -16,21 +16,6 @@
         android:theme="@style/Theme.Apod"
         tools:context=".ui.marsroverphotos.MarsPhotosListFragment">
 
-
-        <!--<TextView
-            android:id="@+id/any"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="8dp"
-            android:textAlignment="center"
-            android:textAppearance="@style/TextAppearance.AppCompat.Large"
-            android:text="Fotos de Marte guardadas"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />-->
-        <!-- @android:drawable/ic_menu_delete -->
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/mars_fotos_list"

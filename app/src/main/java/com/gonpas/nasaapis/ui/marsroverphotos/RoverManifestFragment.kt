@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.webkit.WebChromeClient
 import android.webkit.WebView
-import androidx.core.view.doOnLayout
 import androidx.databinding.DataBindingUtil
 import com.gonpas.nasaapis.R
 import com.gonpas.nasaapis.databinding.RoverManifestBinding
@@ -44,11 +43,6 @@ class RoverManifestFragment : Fragment() {
         loadWebView(webView, url)
 
         return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
     }
 
     private fun loadWebView(webView: WebView, url: String) = with(webView){

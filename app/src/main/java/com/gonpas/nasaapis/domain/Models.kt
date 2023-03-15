@@ -1,8 +1,8 @@
 package com.gonpas.nasaapis.domain
 
 import android.os.Parcelable
+import com.gonpas.nasaapis.database.MarsPhotoDb
 import com.gonpas.nasaapis.util.smartTruncate
-import com.squareup.moshi.Json
 import kotlinx.android.parcel.Parcelize
 
 /**
@@ -58,8 +58,21 @@ data class DomainMarsPhoto(
     val camera: String,
     val imgSrc: String,
     val earthDate: String,
-    val rover: String
+    val rover: String,
+    val roverStatus: String,
+    var saved: Boolean = false
 ): Parcelable
+
+fun DomainMarsPhoto.asDatabaseModel(): MarsPhotoDb{
+    return MarsPhotoDb(
+        marsPhotoId = this.marsPhotoId,
+        sol = this.sol,
+        camera = this.camera,
+        imgSrc = this.imgSrc,
+        earthDate = this.earthDate,
+        rover = this.rover
+    )
+}
 
 @Parcelize
 data class DomainFechaVista(
@@ -68,3 +81,9 @@ data class DomainFechaVista(
     val sol: Int?,
     val disponible: Boolean
 ): Parcelable
+
+fun List<DomainFechaVista>.asListOfString(): List<String>{
+    return map {
+        it.fecha
+    }
+}

@@ -41,4 +41,7 @@
     <string name="mejorada">Mejorada</string>
     <string name="natural">Natural</string>
     <string name="epic_caption">This image was taken by NASA\'s EPIC camera onboard the\nNOAA DSCOVR spacecraft</string>
+    <string name="guardar">Guardar</string>
+    <string name="sol">Sol:</string>
+    <string name="rover_status">Rover status:</string>
 </resources>

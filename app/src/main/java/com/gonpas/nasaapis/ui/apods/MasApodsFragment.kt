@@ -25,12 +25,10 @@ class MasApodsFragment : Fragment() {
         ViewModelProvider(this, viewModelFactory)[MasApodsViewModel::class.java]
     }
 
-//    private lateinit var viewModel: MasApodsViewModel
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         val binding = DataBindingUtil.inflate<FragmentMasApodsBinding>(inflater, R.layout.fragment_mas_apods, container, false)
 
         binding.viewModel = viewModel

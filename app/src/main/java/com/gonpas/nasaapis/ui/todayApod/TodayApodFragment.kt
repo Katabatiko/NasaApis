@@ -97,11 +97,13 @@ class TodayApodFragment : Fragment() {
     }
 
 
+    @Deprecated("Deprecated in Java")
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.apod_menu, menu)
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
        // Log.d("xxTaf","item selected: ${item.itemId}")
         if (item.itemId == R.id.del_apod)   viewModel.delApod()

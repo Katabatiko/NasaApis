@@ -31,9 +31,9 @@ class MainActivityViewModel(val app: Application) : AndroidViewModel(app) {
 
     init {
         _showErrorFileDialog.value = false
-        apods = repository.getApodsFromDb()
+        /*apods = repository.getApodsFromDb()
         marsFotos = repository.getMarsPhotosFromDb()
-        fechasMarte = repository.getAllMarsFechas()
+        fechasMarte = repository.getAllMarsFechas()*/
     }
 
     fun obtenerDatos(){
@@ -91,7 +91,7 @@ class MainActivityViewModel(val app: Application) : AndroidViewModel(app) {
 //        Log.d(TAG,"clase: $clase")
 //        Log.d(TAG,"jsonArray: $jsonArray")
 
-        var gson = GsonBuilder().create()
+        val gson = GsonBuilder().create()
 
 //        val numItems = jsonArray?.length()
         val objetos: List<Any>

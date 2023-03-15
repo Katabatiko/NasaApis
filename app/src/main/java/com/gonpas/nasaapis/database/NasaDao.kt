@@ -32,7 +32,7 @@ interface NasaDao {
     /**
      * Mars photos
      */
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insertMarsPhoto(marsPhoto: MarsPhotoDb)
 
     @Query("delete from MarsPhotoDb where marsPhotoId = :key")
@@ -40,6 +40,10 @@ interface NasaDao {
 
     @Query("select * from MarsPhotoDb order by earthDate desc")
     fun getAllMarsPhotos(): LiveData<List<MarsPhotoDb>>
+
+    @Query("select marsPhotoId from MarsPhotoDb")
+    fun getAllMarsPhotoId(): LiveData<List<Int>>
+
     /**
      * Mars fotos fechas visitadas
      */

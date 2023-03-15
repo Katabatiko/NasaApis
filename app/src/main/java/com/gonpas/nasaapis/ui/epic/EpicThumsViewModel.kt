@@ -56,14 +56,12 @@ class EpicThumbsViewModel(application: Application) : AndroidViewModel(applicati
 
 
     init {
-        _coleccion.value = "natural"
+        _coleccion.value = "enhanced"
         getLastEpic()
     }
 
-    fun setCollection(enhanced: Boolean){
-//        val cambio = coleccion.value == en
-        _coleccion.value = if(enhanced)  "enhanced" else "natural"
-        Log.d(TAG,"coleccion: ${coleccion.value}")
+    fun setCollection(natural: Boolean){
+        _coleccion.value = if(natural)  "natural" else "enhanced"
     }
 
     fun getLastEpic(){

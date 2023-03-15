@@ -42,14 +42,14 @@
             android:id="@+id/apod"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="4dp"
             android:layout_weight="8"
+            android:contentDescription="@{ domainApod.title }"
             android:minWidth="150dp"
             android:minHeight="150dp"
             app:imageUrl="@{ domainApod.url }"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/pic_title"
-            android:contentDescription="@{ domainApod.title }" />
+            app:layout_constraintTop_toBottomOf="@+id/pic_title" />
         <!--
             app:imageUrl="@{ domainApod.mediaType ? "image" domainApod.url : "video" domainApod.thumbUrl }"
             android:visibility="@{ domainApod.isVideo ? View.INVISIBLE : View.VISIBLE  }"-->
@@ -70,13 +70,13 @@
             android:id="@+id/copyright"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
             android:layout_marginTop="8dp"
-            android:layout_marginEnd="16dp"
+            android:layout_marginEnd="4dp"
             android:layout_weight="1"
             android:text="@{ domainApod.copyright }"
-            android:textAlignment="viewEnd"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.49"
+            android:textAlignment="viewStart"
+            app:layout_constraintEnd_toStartOf="@+id/date"
             app:layout_constraintStart_toEndOf="@+id/apod"
             app:layout_constraintTop_toBottomOf="@id/pic_title"
             tools:text="Autor" />
@@ -87,12 +87,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:layout_marginEnd="16dp"
+            android:layout_marginEnd="4dp"
+            android:textSize="10sp"
             app:dateFormat="@{ domainApod.date }"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toEndOf="@+id/apod"
-            app:layout_constraintTop_toBottomOf="@+id/copyright"
+            app:layout_constraintTop_toBottomOf="@+id/pic_title"
             tools:text="22/12/2022" />
 
         <TextView

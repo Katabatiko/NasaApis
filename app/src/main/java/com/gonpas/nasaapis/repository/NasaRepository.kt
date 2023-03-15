@@ -163,7 +163,7 @@ class NasaRepository(private val database: NasaDatabase) {
     }
 
     suspend fun saveMarsPhoto(foto: MarsPhotoDb){
-        Log.d(TAG,"guardando foto en db")
+//        Log.d(TAG,"guardando foto en db")
         withContext(Dispatchers.IO) {
             database.nasaDao.insertMarsPhoto(foto)
         }
@@ -171,6 +171,10 @@ class NasaRepository(private val database: NasaDatabase) {
 
     fun getMarsPhotosFromDb(): LiveData<List<MarsPhotoDb>>{
         return database.nasaDao.getAllMarsPhotos()
+    }
+
+    fun getAllMarsPhotosIdsFromDb(): LiveData<List<Int>>{
+        return database.nasaDao.getAllMarsPhotoId()
     }
 
     suspend fun removeMarsFoto(id: Int){
@@ -194,14 +198,6 @@ class NasaRepository(private val database: NasaDatabase) {
     }
 
     fun getFechasByRover(rover: String): LiveData<List<DomainFechaVista>> {
-        //        withContext(Dispatchers.IO){
-        //     fechas = database.nasaDao.getFechasByRover(rover)
-//        Log.d(TAG, "fechasVistas de $rover: ${fechas.value}")
-//        }
-//        val allFechas: LiveData<List<String>> = fechas.map { it.map { fechaVista -> fechaVista.fecha } }
-//            .distinctUntilChanged()
-//        Log.d(TAG, "fechas de $rover: ${allFechas.value}")
-
         return database.nasaDao.getFechasByRover(rover).asListDomainFechaVista()
     }
 }

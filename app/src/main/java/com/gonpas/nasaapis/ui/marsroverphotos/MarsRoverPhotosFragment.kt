@@ -1,7 +1,5 @@
 package com.gonpas.nasaapis.ui.marsroverphotos
 
-import android.app.Application
-import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -14,15 +12,15 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.gonpas.nasaapis.R
 import com.gonpas.nasaapis.databinding.FragmentMarsRoverPhotosBinding
 import com.gonpas.nasaapis.databinding.MarsFotoItemBinding
-import com.gonpas.nasaapis.network.RoversPhotosDTO
-import com.gonpas.nasaapis.ui.apods.ApodsFragmentDirections
+import com.gonpas.nasaapis.domain.DomainMarsPhoto
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+
 private val CURIOSITY_LANDING_DATE = listOf("2012","05","06")
 private val OPPORTUNITY_LANDING_DATE = listOf("2004","01","25")
 private val SPIRIT_LANDING_DATE = listOf("2004","01","04")
@@ -40,7 +38,7 @@ class MarsRoverPhotosFragment : Fragment() {
     val viewModel: MarsRoverPhotosViewModel by lazy {
         val application = requireNotNull(activity).application
         val viewModelFactory = MarsRoverPhotosViewModelFactory(application)
-        ViewModelProvider(this, viewModelFactory).get(MarsRoverPhotosViewModel::class.java)
+        ViewModelProvider(requireActivity(), viewModelFactory).get(MarsRoverPhotosViewModel::class.java)
     }
 
     override fun onCreateView(
@@ -59,6 +57,7 @@ class MarsRoverPhotosFragment : Fragment() {
         val dia = binding.day
         val mes = binding.month
         val anno = binding.year
+        val totalFotos = binding.totalFotos
 
         viewModel.rover.observe(viewLifecycleOwner){
             when(it){
@@ -115,18 +114,23 @@ class MarsRoverPhotosFragment : Fragment() {
 
         val adapter = MarsFotosAdapter(FotoSaveListener {
             viewModel.guardarFoto(it)
-
+            it.saved = true
         })
         binding.marsFotos.adapter = adapter
 
         viewModel.photos.observe(viewLifecycleOwner){ fotos ->
+//            Log.d(TAG,"photos changed")
             if (fotos != null){
                 if (fotos.isNotEmpty()) {
                     adapter.let {
-                        it.datos = fotos.asList()
-                        it.notifyDataSetChanged()
+//                        it.datos = fotos
+//                        it.notifyDataSetChanged()
+                        it.submitList(fotos)
                     }
+                    val template = "Fotos: %s"
+                    totalFotos.text = String.format(template, fotos.size)
                 }else{
+                    totalFotos.text = "Fotos:"
                     Toast.makeText(context, "Fecha fuera de rango", Toast.LENGTH_LONG).show()
                 }
             }
@@ -140,6 +144,15 @@ class MarsRoverPhotosFragment : Fragment() {
         }
 
         setHasOptionsMenu(true)
+
+        viewModel.photosId.observe(viewLifecycleOwner){
+            /*Log.d(TAG,"photosIds recibidos: ${viewModel.photosId.value?.size}")
+            if (viewModel.photos.value != null) {
+                viewModel.evalSavedPhotos()
+
+            }*/
+        }
+
 
         viewModel._fechasPerseverance.observe(viewLifecycleOwner){
             Log.d(TAG, "fechas PERSEVERANCE: $it")
@@ -173,15 +186,22 @@ class MarsRoverPhotosFragment : Fragment() {
         return binding.root
     }
 
+
+    @Deprecated("Deprecated in Java")
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.mars_fotos_menu, menu)
     }
+    @Deprecated("Deprecated in Java")
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
 //         Log.d("xxAf","item selected: ${item.itemId}")
         when(item.itemId){
-            R.id.marsPhotosListFragment -> requireView().findNavController().navigate(
-                MarsRoverPhotosFragmentDirections.actionMarsRoverPhotosFragmentToMarsPhotosListFragment())
+            R.id.marsPhotosListFragment -> {
+                viewModel.loadSavedPhotos()
+                findNavController().navigate(
+                    MarsRoverPhotosFragmentDirections.actionMarsRoverPhotosFragmentToMarsPhotosListFragment()
+                )
+            }
 
             R.id.fechasVistasFragment -> {
                 val fechas = when(viewModel.rover.value){
@@ -197,26 +217,27 @@ class MarsRoverPhotosFragment : Fragment() {
         return super.onOptionsItemSelected(item)
     }
 
-    class MarsFotosAdapter(val clickListener: FotoSaveListener) : RecyclerView.Adapter<MarsFotosAdapter.FotoViewHolder>() {
-        var datos = listOf<RoversPhotosDTO>()
-            set(value) { field = value  }
+    class MarsFotosAdapter(val clickListener: FotoSaveListener) : ListAdapter<DomainMarsPhoto, MarsFotosAdapter.FotoViewHolder>(MarsPhotosDiffCallback) {
+        /*var datos = listOf<DomainMarsPhoto>()
+            set(value) { field = value  }*/
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FotoViewHolder {
             return FotoViewHolder.from(parent)
         }
 
         override fun onBindViewHolder(holder: FotoViewHolder, position: Int) {
-            val item = datos[position]
+            val item = getItem(position)
             holder.binding.foto = item
             holder.binding.saveBtn.setOnClickListener {
                 clickListener.onClick(item)
-                it.isEnabled = false
-                it.setBackgroundResource(R.color.gris_claro)
+                it.visibility = View.INVISIBLE
+//                notifyItemChanged(position)   ¡¡¡¡ DA ERROR POR INTENTAR EJECUTAR EL METODO ...ViewGroup.getParect() EN OBJETO NULL !!!!
+//                notifyItemChanged(holder.absoluteAdapterPosition)     ¡¡¡¡ MISMO ERROR !!!!
             }
             holder.binding.executePendingBindings()
         }
 
-        override fun getItemCount(): Int = datos.size
+//        override fun getItemCount(): Int = datos.size
 
         class FotoViewHolder(val binding: MarsFotoItemBinding) : RecyclerView.ViewHolder(binding.root){
             companion object{
@@ -228,9 +249,30 @@ class MarsRoverPhotosFragment : Fragment() {
             }
         }
 
+        companion object MarsPhotosDiffCallback: DiffUtil.ItemCallback<DomainMarsPhoto>(){
+            override fun areItemsTheSame(
+                oldItem: DomainMarsPhoto,
+                newItem: DomainMarsPhoto
+            ): Boolean {
+//                Log.d(TAG,"areItemsTheSame")
+                return oldItem === newItem
+//                return oldItem.marsPhotoId == newItem.marsPhotoId
+            }
+
+            override fun areContentsTheSame(
+                oldItem: DomainMarsPhoto,
+                newItem: DomainMarsPhoto
+            ): Boolean {
+                Log.d(TAG,"areContentsTheSame")
+                return oldItem.marsPhotoId == newItem.marsPhotoId && oldItem.saved == newItem.saved
+//                return oldItem == newItem
+            }
+        }
+
     }
 
-    class FotoSaveListener(val clickListener: (foto: RoversPhotosDTO) -> Unit){
-        fun onClick(foto: RoversPhotosDTO) = clickListener(foto)
+    class FotoSaveListener(val clickListener: (foto: DomainMarsPhoto) -> Unit){
+        fun onClick(foto: DomainMarsPhoto) = clickListener(foto)
     }
+
 }

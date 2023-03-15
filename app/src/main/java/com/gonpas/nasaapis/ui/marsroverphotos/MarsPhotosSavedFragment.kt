@@ -2,7 +2,6 @@ package com.gonpas.nasaapis.ui.marsroverphotos
 
 import android.app.AlertDialog
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,18 +12,18 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.gonpas.nasaapis.R
-import com.gonpas.nasaapis.database.asListDomainMarsPhotos
 import com.gonpas.nasaapis.databinding.FragmentMarsPhotosListBinding
 import com.gonpas.nasaapis.databinding.MarsPhotoSavedItemBinding
 import com.gonpas.nasaapis.domain.DomainMarsPhoto
 
-private const val TAG = "xxMplf"
+private const val TAG = "xxMpsf"
 
 class MarsPhotosListFragment : Fragment(){
-    val viewModel: MarsPhotosListViewModel by lazy {
+
+    val viewModel: MarsRoverPhotosViewModel by lazy {
         val application = requireNotNull(activity).application
-        val viewModelFactory = MarsPhotosListViewModelFactory(application)
-        ViewModelProvider(this, viewModelFactory).get(MarsPhotosListViewModel::class.java)
+        val viewModelFactory = MarsRoverPhotosViewModelFactory(application)
+        ViewModelProvider(requireActivity(), viewModelFactory).get(MarsRoverPhotosViewModel::class.java)
     }
 
     private lateinit var adapter: MarsFotosListAdapter
@@ -46,7 +45,8 @@ class MarsPhotosListFragment : Fragment(){
             builder.setMessage("¿Seguro de borrar?")
                 .setCancelable(false)
                 .setPositiveButton("Confirmar"){ dialog, id ->
-                    viewModel.removeFoto(it.marsPhotoId)
+                    it.saved = false
+                    viewModel.removeFoto(it)
                 }
                 .setNegativeButton("Cancelar"){ dialog, id ->
                     dialog.dismiss()
@@ -56,22 +56,21 @@ class MarsPhotosListFragment : Fragment(){
 
         binding.marsFotosList.adapter = adapter
 
-        viewModel.fotosList.observe(viewLifecycleOwner){ list ->
-            Log.d(TAG,"lista de fotos recibida con ${list.size} imágenes")
+
+        viewModel.savedFotosList.observe(viewLifecycleOwner){ list ->
+//            Log.d(TAG,"lista de fotos recibida con ${list.size} imágenes")
             viewModel.setStatusDone()
             adapter.let {
-                it.submitList(list.asListDomainMarsPhotos())
+                it.submitList(list)
             }
         }
 
         return binding.root
     }
 
-
     class MarsFotosListAdapter(val clickListener: DeleteFotoListener) : ListAdapter<DomainMarsPhoto, MarsFotosListAdapter.FotoViewHolder>(FotosDiffCallback) {
 
-        var list = listOf<DomainMarsPhoto>()
-            set(value) { field = value}
+//        var list = listOf<DomainMarsPhoto>()
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FotoViewHolder {
             return FotoViewHolder.from(parent)
@@ -99,7 +98,7 @@ class MarsPhotosListFragment : Fragment(){
                 oldItem: DomainMarsPhoto,
                 newItem: DomainMarsPhoto
             ): Boolean {
-                return oldItem.marsPhotoId == newItem.marsPhotoId
+                return oldItem.marsPhotoId == newItem.marsPhotoId && oldItem.saved == newItem.saved
             }
         }
 

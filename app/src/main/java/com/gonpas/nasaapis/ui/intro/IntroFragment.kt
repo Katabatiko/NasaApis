@@ -12,8 +12,6 @@ import kotlinx.coroutines.delay
 
 class IntroFragment : Fragment() {
 
-    private lateinit var viewModel: IntroViewModel
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -25,7 +23,7 @@ class IntroFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val navController = this.findNavController()
+//        val navController = this.findNavController()
         /*lifecycleScope.launchWhenCreated {
             delay(2000)
             navController.navigate(IntroFragmentDirections.actionIntroFragmentToApodFragment())

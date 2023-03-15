@@ -66,13 +66,11 @@ class RefreshDataWorker(val appContext: Context, params: WorkerParameters) : Cor
             val notificationChannel = NotificationChannel(
                 channelId,
                 channelName,
-                // TODO: Step 2.4 change importance
                 NotificationManager.IMPORTANCE_HIGH
             )
-            // TODO: Step 2.6 disable badges for this channel
 
             notificationChannel.enableLights(true)
-            notificationChannel.lightColor = Color.RED
+            notificationChannel.lightColor = Color.BLUE
             notificationChannel.enableVibration(true)
             notificationChannel.description = "Imágen Astronómica del Día"
 

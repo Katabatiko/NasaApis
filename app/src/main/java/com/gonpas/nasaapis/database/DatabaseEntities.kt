@@ -1,7 +1,6 @@
 package com.gonpas.nasaapis.database
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.Transformations
 import androidx.lifecycle.Transformations.map
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -27,9 +26,6 @@ data class ApodDb constructor(
         return "$apodId·$title·$url·$hdurl·$copyright·$date·$explanation·$mediaType·$serviceVersion"
     }
 
-    fun resetId(){
-
-    }
 }
 
 /**
@@ -80,16 +76,20 @@ data class MarsPhotoDb constructor(
     }
 }
 
-fun List<MarsPhotoDb>.asListDomainMarsPhotos(): List<DomainMarsPhoto>{
-    return map{
-        DomainMarsPhoto(
-            marsPhotoId = it.marsPhotoId,
-            sol = it.sol,
-            camera = it.camera,
-            imgSrc = it.imgSrc,
-            earthDate = it.earthDate,
-            rover = it.rover
-        )
+fun LiveData<List<MarsPhotoDb>>.asListDomainMarsPhotos(): LiveData<List<DomainMarsPhoto>>{
+    return map(this){
+        it.map {
+            DomainMarsPhoto(
+                marsPhotoId = it.marsPhotoId,
+                sol = it.sol,
+                camera = it.camera,
+                imgSrc = it.imgSrc,
+                earthDate = it.earthDate,
+                rover = it.rover,
+                roverStatus = "",
+                saved = true
+            )
+        }
     }
 }
 

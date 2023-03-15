@@ -7,9 +7,9 @@
         <variable
             name="foto"
             type="com.gonpas.nasaapis.domain.DomainMarsPhoto" />
-        <variable
+        <!--<variable
             name="viewModel"
-            type="com.gonpas.nasaapis.ui.marsroverphotos.MarsPhotosListViewModel" />
+            type="com.gonpas.nasaapis.ui.marsroverphotos.MarsPhotosListViewModel" />-->
         <variable
             name="clickListener"
             type="com.gonpas.nasaapis.ui.marsroverphotos.MarsPhotosListFragment.DeleteFotoListener" />
@@ -103,14 +103,13 @@
             android:text="Borrar"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/imageView4"
-            app:layout_constraintTop_toBottomOf="@+id/textView10" />
+            app:layout_constraintStart_toEndOf="@+id/imageView4" />
 
         <TextView
             android:id="@+id/textView6"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="6dp"
+            android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:text="Fecha: "
             app:layout_constraintStart_toEndOf="@+id/imageView4"
@@ -127,6 +126,28 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/textView6"
             app:layout_constraintTop_toBottomOf="@+id/textView8" />
+
+        <TextView
+            android:id="@+id/textView27"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:text="id:"
+            app:layout_constraintStart_toEndOf="@+id/imageView4"
+            app:layout_constraintTop_toBottomOf="@+id/textView6" />
+
+        <TextView
+            android:id="@+id/textView28"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            app:toString="@{ foto.marsPhotoId }"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/textView27"
+            app:layout_constraintTop_toBottomOf="@+id/textView10" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

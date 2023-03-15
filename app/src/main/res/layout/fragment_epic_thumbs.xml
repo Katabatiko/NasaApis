@@ -20,10 +20,11 @@
 
         <TextView
             android:id="@+id/textView2"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginEnd="16dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="8dp"
             android:text="@string/buscar_imagen_por_fecha"
             android:textAppearance="@style/TextAppearance.Subtitle"
             app:layout_constraintEnd_toStartOf="@+id/btn_collection"
@@ -35,7 +36,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="24dp"
             android:text="Dia:"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView2" />
@@ -45,7 +46,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="16dp"
             android:hint="20"
             android:inputType="number"
             android:maxLength="2"
@@ -58,7 +59,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="24dp"
             android:text="Mes:"
             app:layout_constraintStart_toEndOf="@+id/day"
             app:layout_constraintTop_toBottomOf="@+id/textView2" />
@@ -68,7 +69,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="16dp"
             android:hint="06"
             android:inputType="number"
             android:maxLength="2"
@@ -81,7 +82,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="24dp"
             android:text="Año:"
             app:layout_constraintStart_toEndOf="@+id/month"
             app:layout_constraintTop_toBottomOf="@+id/textView2" />
@@ -91,7 +92,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="16dp"
             android:ems="3"
             android:hint="1995"
             android:inputType="number"
@@ -105,7 +106,7 @@
             style="@style/ButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="16dp"
             android:background="@color/dark_grey"
             android:onClick="@{ () -> viewModel.getEpicByDate() }"
             android:text="Descargar"
@@ -156,32 +157,24 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
-        <!--            android:onCheckedChanged="@{ (_, isChecked) -> viewModel.setCollection(isChecked) }"-->
 
         <ToggleButton
             android:id="@+id/btn_collection"
             style="@style/ToggleButtonStyle"
             android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_marginEnd="4dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
             android:background="@color/dark_grey"
-            android:textOff="@string/natural"
-            android:textOn="@string/mejorada"
+            android:textOff="@string/mejorada"
+            android:textOn="@string/natural"
             app:backgroundTint="@color/button_background"
-            app:layout_constraintBottom_toBottomOf="@+id/textView2"
+            app:layout_constraintBottom_toTopOf="@+id/btn_descargar"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/textView2"
             app:layout_constraintTop_toTopOf="@+id/textView2" />
-
-        <!--<com.google.android.material.switchmaterial.SwitchMaterial
-            android:id="@+id/switch1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/mejorada"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/btn_animacion"
-            app:layout_constraintTop_toBottomOf="@+id/epics_thumbs" />-->
+        <!--            android:onCheckedChanged="@{ (_, isChecked) -> viewModel.setCollection(isChecked) }"-->
 
         <!--
 

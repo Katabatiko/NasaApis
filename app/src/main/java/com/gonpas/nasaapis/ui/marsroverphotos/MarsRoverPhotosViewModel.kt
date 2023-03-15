@@ -6,14 +6,15 @@ import android.view.View
 import android.widget.Toast
 import androidx.lifecycle.*
 import com.gonpas.nasaapis.R
+import com.gonpas.nasaapis.database.asListDomainMarsPhotos
 import com.gonpas.nasaapis.database.getDatabase
-import com.gonpas.nasaapis.domain.DomainFechaVista
-import com.gonpas.nasaapis.domain.DomainRover
+import com.gonpas.nasaapis.domain.*
 import com.gonpas.nasaapis.network.*
 import com.gonpas.nasaapis.repository.NasaRepository
 import com.gonpas.nasaapis.ui.apods.NasaApiStatus
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
 
 private const val TAG ="xxMrpvm"
 class MarsRoverPhotosViewModel(application: Application) : AndroidViewModel(application){
@@ -33,10 +34,18 @@ class MarsRoverPhotosViewModel(application: Application) : AndroidViewModel(appl
     private val _rover = MutableLiveData<String>()
     val rover: LiveData<String>
         get() = _rover
+    private val _roverStatus = MutableLiveData<String>()
+    val roverStatus: LiveData<String>
+        get() = _roverStatus
 
-    private val _photos = MutableLiveData<Array<RoversPhotosDTO>>()
-    val photos: LiveData<Array<RoversPhotosDTO>>
+    private val _photos = MutableLiveData<List<DomainMarsPhoto>>()
+    val photos: LiveData<List<DomainMarsPhoto>>
         get() = _photos
+
+    val photosId: LiveData<List<Int>>
+
+
+    lateinit var savedFotosList : LiveData<List<DomainMarsPhoto>>// = repository.getMarsPhotosFromDb().asListDomainMarsPhotos()
 
     lateinit var _fechasPerseverance: LiveData<List<DomainFechaVista>>
 
@@ -54,6 +63,7 @@ class MarsRoverPhotosViewModel(application: Application) : AndroidViewModel(appl
     val navigateToRoverManifest: LiveData<DomainRover?>
         get() = _navigateToRoverManifest
 
+
     private val _status = MutableLiveData<NasaApiStatus>()
     val status: LiveData<NasaApiStatus>
         get() = _status
@@ -61,28 +71,30 @@ class MarsRoverPhotosViewModel(application: Application) : AndroidViewModel(appl
 
     init {
         _navigateToRoverManifest.value = null
+//        _goToSavedMarsPhotos.value = listOf()
         _rover.value = "perseverance"
+        _roverStatus.value = "active"
         _showAlertDialog.value = false
         initFechasRovers()
-//        _guardarFoto.value = false
         getLatestFotos()
+        photosId = repository.getAllMarsPhotosIdsFromDb()
+    }
+
+    fun setStatusDone()  {
+        _status.value = NasaApiStatus.DONE
     }
 
     fun setDia(dia: String) {
         _dia.value = dia
-//        Log.d(TAG,"setDia: ${_dia.value}")
     }
     fun setMes(mes: String) {
         _mes.value = mes
-//        Log.d(TAG,"setMes: ${_mes.value}")
     }
     fun setAnno(anno: String){
         _anno.value = anno
-//        Log.d(TAG,"setAño: ${_anno.value}")
     }
 
     fun radioBtnChecked(view: View){
-       // Log.d(TAG,"seleccionado: ${view.id}")
         _rover.value = when(view.id){
             R.id.perseverance -> "perseverance"
             R.id.curiosity -> "curiosity"
@@ -92,6 +104,7 @@ class MarsRoverPhotosViewModel(application: Application) : AndroidViewModel(appl
         _anno.value = ""
         _mes.value =  ""
         _dia.value =  ""
+        _roverStatus.value = ""
     }
 
     fun initFechasRovers(){
@@ -126,15 +139,23 @@ class MarsRoverPhotosViewModel(application: Application) : AndroidViewModel(appl
     }
 
     suspend fun getLatestMarsFotos(){
+
         try {
-            _photos.value = repository.getLatestMarsRoversPhotos(rover.value!!).photos
+//            Log.d(TAG,"obteniendo ultimas fotos de marte")
+            _photos.value = repository.getLatestMarsRoversPhotos(rover.value!!).photos.asList().asDomainModel()
             val fecha = photos.value?.get(0)?.earthDate
+            _roverStatus.value = photos.value?.get(0)?.roverStatus
             // registro de fecha vista
-            repository.insertFechaVista(rover.value!!, fecha!!, photos.value!!.get(0).sol, true)
             val partes = fecha?.split("-")
             _anno.value = partes?.get(0)
             _mes.value = partes?.get(1)
             _dia.value = partes?.get(2)
+            if (testFecha("${anno.value}-${mes.value}-${dia.value}")) {
+                Log.d(TAG,"evaluando fotos guardadas")
+                evalSavedPhotos()
+            }else{
+                repository.insertFechaVista(rover.value!!, fecha!!, photos.value!!.get(0).sol, true)
+            }
         }catch (ce: CancellationException) {
             throw ce    // NECESARIO PARA CANCELAR EL SCOPE DE LA RUTINA
         }catch (e: Exception){
@@ -160,9 +181,12 @@ class MarsRoverPhotosViewModel(application: Application) : AndroidViewModel(appl
                 }
             }
         }else {
+            val sdf = SimpleDateFormat("yyyy")
+            val todayYear = sdf.format(System.currentTimeMillis())
+            val thisYear = Integer.parseInt(todayYear)
             if (dia.value?.let { Integer.parseInt(it) } in 1..31 &&
                 mes.value?.let { Integer.parseInt(it) } in 1..12 &&
-                anno.value?.let { Integer.parseInt(it) } in 2004..2022) {
+                anno.value?.let { Integer.parseInt(it) } in 2004..thisYear) {
                     if(!testFecha("${anno.value}-${mes.value}-${dia.value}") || force){
                                 _status.value = NasaApiStatus.LOADING
                                 viewModelScope.launch {
@@ -181,10 +205,10 @@ class MarsRoverPhotosViewModel(application: Application) : AndroidViewModel(appl
                                         ).show()
                                     }
                                 }
-                        Log.d(TAG,"Fecha ya visitada")
+//                        Log.d(TAG,"Fecha nueva")
                     }
                     else{
-                        Log.d(TAG,"Fecha nueva")
+//                        Log.d(TAG,"Fecha ya visitada")
                         _showAlertDialog.value = true
                     }
 
@@ -198,8 +222,15 @@ class MarsRoverPhotosViewModel(application: Application) : AndroidViewModel(appl
         try {
             val fotos = repository.getMarsPhotos(rover.value!!, "${anno.value}-${mes.value}-${dia.value}")
             if (fotos.photos.isNotEmpty()) {
-                repository.insertFechaVista(rover.value!!, "${anno.value}-${mes.value}-${dia.value}",fotos.photos.get(0).sol, true )
-                _photos.value = fotos.photos
+                _photos.value = fotos.photos.asList().asDomainModel()
+                _roverStatus.value = photos.value?.get(0)?.roverStatus
+                if (testFecha("${anno.value}-${mes.value}-${dia.value}")) {
+                    Log.d(TAG,"evaluando fotos guardadas")
+                    evalSavedPhotos()
+                }else{
+                    Log.d(TAG,"testFecha false: ${anno.value}-${mes.value}-${dia.value}")
+                    repository.insertFechaVista(rover.value!!, "${anno.value}-${mes.value}-${dia.value}",fotos.photos.get(0).sol, true )
+                }
             }
             else {
                 repository.insertFechaVista(rover.value!!, "${anno.value}-${mes.value}-${dia.value}",null, false )
@@ -213,31 +244,37 @@ class MarsRoverPhotosViewModel(application: Application) : AndroidViewModel(appl
         }
     }
 
+    fun evalSavedPhotos(){
+//        Log.d(TAG,"evaluando ${_photos.value?.size} fotos actuales --> photosId size: ${photosId.value!!.size}")
+        _photos.value!!.forEach {
+            /*val actual = it.saved
+            Log.d(TAG,"id: ${it.marsPhotoId}")
+            val nuevo = photosId.value!!.contains(it.marsPhotoId)
+            if(actual != nuevo) {
+                Log.d(TAG, "cambio en  ${it.marsPhotoId}")
+                it.saved = nuevo
+            }*/
+            it.saved = photosId.value!!.contains(it.marsPhotoId)
+        }
+    }
+
     fun testFecha(fecha: String): Boolean{
         return when(rover.value){
             "perseverance" -> {
-                transformListFechaVistaToListFechas(_fechasPerseverance).contains(fecha)
+                _fechasPerseverance.value!!.asListOfString().contains(fecha)
             }
             "opportunity" -> {
-                transformListFechaVistaToListFechas(_fechasOpportunity).contains(fecha)
+                _fechasOpportunity.value!!.asListOfString().contains(fecha)
             }
             "curiosity" -> {
-                transformListFechaVistaToListFechas(_fechasCuriosity).contains(fecha)
+                _fechasCuriosity.value!!.asListOfString().contains(fecha)
             }
             else -> {
-                transformListFechaVistaToListFechas(_fechasSpirit).contains(fecha)
+                _fechasSpirit.value!!.asListOfString().contains(fecha)
             }
         }
     }
 
-    fun transformListFechaVistaToListFechas(lista: LiveData<List<DomainFechaVista>>) : List<String>{
-        var listaFechas = listOf <String>()
-
-        for (item in lista.value!!){
-            listaFechas = listaFechas.plus(item.fecha)
-        }
-        return listaFechas
-    }
 
     suspend fun getRoverManifest(){
         try {
@@ -268,27 +305,42 @@ class MarsRoverPhotosViewModel(application: Application) : AndroidViewModel(appl
         _navigateToRoverManifest.value = null
     }
 
-/*    val guardando = Transformations.map(_guardarFoto) {
-        it
-    }*/
+    fun loadSavedPhotos(){
+        savedFotosList = repository.getMarsPhotosFromDb().asListDomainMarsPhotos()
+        _status.value = NasaApiStatus.LOADING
+    }
 
-    /*fun guardarFoto(){
-        Log.d(TAG,"clicked guardar foto")
-        _guardarFoto.value = true
-    }*/
-    /*fun fotoGuardada(){
-        _guardarFoto.value = false
-    }*/
 
-    fun guardarFoto(foto: RoversPhotosDTO){
+    fun guardarFoto(foto: DomainMarsPhoto){
         viewModelScope.launch {
             savePhoto(foto)
         }
     }
 
-    suspend fun savePhoto(foto: RoversPhotosDTO){
+    suspend fun savePhoto(foto: DomainMarsPhoto){
         repository.saveMarsPhoto(foto.asDatabaseModel())
     }
+
+    fun removeFoto(foto: DomainMarsPhoto){
+        viewModelScope.launch {
+            repository.removeMarsFoto(foto.marsPhotoId)
+        }
+        // solo interesa cuando es de la fecha actual
+        if (foto.earthDate == "${anno.value}-${mes.value}-${dia.value}"){
+            findActualPhotoRemoved(foto.marsPhotoId)
+        }
+
+    }
+
+    fun findActualPhotoRemoved(fotoId: Int){
+        _photos.value?.forEach{
+            if (fotoId == it.marsPhotoId){
+//                Log.d(TAG,"foto saved: ${foto.saved}")
+                it.saved = false
+            }
+        }
+    }
+
 }
 
 

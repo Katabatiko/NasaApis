@@ -1,7 +1,6 @@
 package com.gonpas.nasaapis.util
 
 import android.graphics.Color
-import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -10,7 +9,6 @@ import androidx.databinding.BindingAdapter
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.gonpas.nasaapis.R
-import com.gonpas.nasaapis.domain.DomainApod
 import com.gonpas.nasaapis.domain.DomainEpic
 import com.gonpas.nasaapis.ui.apods.NasaApiStatus
 import com.ravikoradiya.zoomableimageview.ZoomableImageView
@@ -87,8 +85,19 @@ fun setBigImage(imgView: ImageView, epic: DomainEpic, coleccion: String){
 }
 
 @BindingAdapter("capitalize")
-fun TextView.capitalize(word: String){
-    text = word.uppercase()
+fun TextView.capitalize(rover: String){
+    text = rover.uppercase()
+}
+
+@BindingAdapter("setRover", "setStatus")
+fun TextView.setRover(rover: String, status: String){
+    val template = "%s   %s"
+    val roverStatus = when(status){
+        "active" -> "(activo)"
+        "complete" -> "(finalizado)"
+        else -> ""
+    }
+    text = String.format(template, rover.uppercase(), roverStatus)
 }
 
 @BindingAdapter("toString")
@@ -98,7 +107,6 @@ fun TextView.intToString(int: Int){
 
 @BindingAdapter("dateFormat")
 fun TextView.bindDateFormated(date: String){
-//    Log.d("xxBu","date received: $date")
     var partes = date.split("-")
     partes = partes.reversed()
     val template = "%s-%s-%s"

@@ -1,10 +1,11 @@
 package com.gonpas.nasaapis.network
 
 import com.gonpas.nasaapis.database.MarsPhotoDb
+import com.gonpas.nasaapis.domain.DomainMarsPhoto
 import com.gonpas.nasaapis.domain.DomainRover
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
-import java.util.*
+import kotlin.collections.List
 
 /**
  * La API devuelve un JSON con una única key: photos, que contiene un array de fotos
@@ -68,6 +69,20 @@ data class RoversPhotosDTO (
     @Json(name = "earth_date") val earthDate: String,
     val rover: Rover
 )
+
+fun List<RoversPhotosDTO>.asDomainModel(): List<DomainMarsPhoto>{
+    return map{
+        DomainMarsPhoto(
+            marsPhotoId = it.id,
+            sol = it.sol,
+            camera = it.camera.fullName,
+            imgSrc = it.imgSrc,
+            earthDate = it.earthDate,
+            rover = it.rover.name,
+            roverStatus = it.rover.status
+        )
+    }
+}
 
 fun RoversPhotosDTO.asDatabaseModel(): MarsPhotoDb{
     return MarsPhotoDb(

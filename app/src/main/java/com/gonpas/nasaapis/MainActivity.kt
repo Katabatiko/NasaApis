@@ -1,5 +1,6 @@
 package com.gonpas.nasaapis
 
+import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -12,6 +13,7 @@ import android.provider.OpenableColumns
 import android.util.Log
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.databinding.DataBindingUtil
 import androidx.drawerlayout.widget.DrawerLayout
@@ -22,8 +24,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
 import androidx.work.*
-import com.gonpas.nasaapis.database.ApodDb
 import com.gonpas.nasaapis.databinding.ActivityMainBinding
+import com.gonpas.nasaapis.util.cancelNotification
 import com.gonpas.nasaapis.worker.RefreshDataWorker
 import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.activity_main.*
@@ -37,15 +39,14 @@ import java.util.concurrent.TimeUnit
     private const val CREATE_FILE_MARS_FOTOS =2
     private const val CREATE_FILE_MARS_FECHAS =3
     private const val PICK_DB_FILE = 7
-    private const val OPEN_DOWNLOAD_DIR = 0
+//    private const val OPEN_DOWNLOAD_DIR = 0
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
     private lateinit var drawerLayout: DrawerLayout
     private val applicationScope = CoroutineScope(Dispatchers.Default)
-    private val backupScope = CoroutineScope(Dispatchers.IO)
-    private lateinit var openUri: Uri
-    var jsonExample: String = "{\"apodId\":15,\"copyright\":\"Nasa\",\"date\":\"2022-12-08\",\"explanation\":\"A camera on board the uncrewed Orion spacecraft captured this view on December 5 as Orion approached its return powered flyby of the Moon.  Below one of Orion's extended solar arrays lies dark, smooth, terrain along the western edge of the Oceanus Procellarum. Prominent on the lunar nearside Oceanus Procellarum, the Ocean of Storms, is the largest of the Moon's lava-flooded maria. The lunar terminator, shadow line between lunar night and day, runs along the left of the frame. The 41 kilometer diameter crater Marius is top center, with ray crater Kepler peeking in at the edge, just right of the solar array wing. Kepler's bright rays extend to the north and west, reaching the dark-floored Marius. Of course the Orion spacecraft is now headed toward a December 11 splashdown in planet Earth's water-flooded Pacific Ocean.\",\"hdurl\":\"https://apod.nasa.gov/apod/image/2212/art001e002132.jpg\",\"mediaType\":\"image\",\"serviceVersion\":\"v1\",\"title\":\"Orion and the Ocean of Storms\",\"url\":\"https://apod.nasa.gov/apod/image/2212/art001e002132_apod1024.jpg\"}"
+//    private val backupScope = CoroutineScope(Dispatchers.IO)
+
 
     val viewModel: MainActivityViewModel by lazy {
         Log.d(TAG,"Instanciando mainactivity viewmodel")
@@ -71,12 +72,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         navView.setNavigationItemSelectedListener(this)
 
 
-
-
-        /*WorkManager.initialize(
-            applicationContext,
-            Configuration.Builder().setMinimumLoggingLevel(Log.DEBUG).build()
-        )*/
         delayedInit()
         //fijar el modo noche como el actual
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
@@ -93,11 +88,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 //        Log.d(TAG, "data.data: ${data?.data}")
 
-        val documentFolder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
         val contentResolver = applicationContext.contentResolver
         val takeFlags: Int = Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
 
@@ -175,7 +170,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         workManager
             .enqueueUniquePeriodicWork(
             RefreshDataWorker.WORK_NAME,
-            ExistingPeriodicWorkPolicy.KEEP,
+            ExistingPeriodicWorkPolicy.REPLACE,
             repeatingRequest
         )
         /*workManager.enqueue(oneRequest)
@@ -217,10 +212,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 val documentFolder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).absolutePath
 //                Log.d(TAG, "documentFolder: ${Uri.parse(documentFolder)}")
 //                Log.d(TAG,"estado storage: ${Environment.getExternalStorageState()}")
-                /*viewModel.apods.observe(this){
-                    Log.d(TAG, "Recibidos apods")
-                    createFile(Uri.parse(documentFolder), "NasaApodsBackup.json")
-                }*/
+
                 viewModel.apods.observerOnce(this) {
                     Log.d(TAG, "Recibidos apods")
                     createFile(Uri.parse(documentFolder), "NasaApodsBackup.json")
@@ -235,13 +227,18 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     createFile(Uri.parse(documentFolder), "NasaMarsFechasBackup.json")
                     Log.d(TAG, "Recibidas fechas vistas de marte")
                 }
-//                Log.d(TAG,"documentFolder: $documentFolder")
-
 
 //                Toast.makeText(this, "Datos guardados en $documentFolder", Toast.LENGTH_LONG).show()
 
             }
-            R.id.apodsFragment -> navController.navigate(R.id.apodsFragment)
+            R.id.apodsFragment -> {
+                val notificationManager =ContextCompat.getSystemService(
+                    this,
+                    NotificationManager::class.java
+                ) as NotificationManager
+                notificationManager.cancelNotification()
+                navController.navigate(R.id.apodsFragment)
+            }
             R.id.epicThumsFragment -> navController.navigate(R.id.epicThumsFragment)
             R.id.marsRoverPhotosFragment -> navController.navigate(R.id.marsRoverPhotosFragment)
 
