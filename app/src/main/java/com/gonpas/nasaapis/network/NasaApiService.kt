@@ -30,7 +30,7 @@ private const val SPIRIT = "spirit"
 private const val MAST = "mast"
 //  cámara con lentes de mano (curiosity)
 private const val MAHLI = "mahli"
-// cámara de navegación (curiosity, pportunity, spirit)
+// cámara de navegación (curiosity, opportunity, spirit)
 private const val NAVCAM = "navcam"
 // cámara panorámica (opportunity, spirit)
 private const val PANCAM = "pancam"
