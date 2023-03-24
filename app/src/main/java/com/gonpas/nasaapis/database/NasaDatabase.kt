@@ -12,7 +12,7 @@ import java.util.concurrent.Executors
 
 //@Database(entities = [ApodDb::class], version = 1)
 //@Database(entities = [ApodDb::class, MarsPhotoDb::class], version = 2, autoMigrations = [AutoMigration (from = 1, to = 2)])
-@Database(entities = [ApodDb::class, MarsPhotoDb::class, FechaVista::class], version = 3, autoMigrations = [AutoMigration (from = 1, to = 2), AutoMigration(from = 2, to = 3)])
+@Database(entities = [ApodDb::class, MarsPhotoDb::class, FechaVista::class], version = 4, autoMigrations = [AutoMigration (from = 1, to = 2), AutoMigration(from = 2, to = 3), AutoMigration(from = 3, to = 4)])
 abstract class NasaDatabase : RoomDatabase() {
     abstract val nasaDao: NasaDao
 }

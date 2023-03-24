@@ -186,10 +186,16 @@ class NasaRepository(private val database: NasaDatabase) {
     /******************************************************************************************************/
     /** MARS FECHAS VISTAS */
 
-    suspend fun insertFechaVista(rover: String, fecha: String, sol: Int?, disponible: Boolean){
-        val fechaVista = FechaVista(rover, fecha, sol, disponible)
+    suspend fun insertFechaVista(rover: String, fecha: String, sol: Int?, totalFotos: Int?, disponible: Boolean){
+        val fechaVista = FechaVista(rover, fecha, sol, totalFotos, disponible)
         withContext(Dispatchers.IO){
             database.nasaDao.insertFechaVista(fechaVista)
+        }
+    }
+
+    suspend fun updateTotalFotos(fecha: String, numFotos: Int){
+        withContext(Dispatchers.IO){
+            database.nasaDao.updateTotalFotos(fecha, numFotos)
         }
     }
 

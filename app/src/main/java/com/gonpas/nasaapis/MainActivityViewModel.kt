@@ -123,7 +123,7 @@ class MainActivityViewModel(val app: Application) : AndroidViewModel(app) {
                 Log.d(TAG,"fechas del backup: ${objetos.size}")
                 viewModelScope.launch {
                     for (fecha in objetos){
-                        repository.insertFechaVista(fecha.rover,fecha.fecha,fecha.sol,true)
+                        repository.insertFechaVista(fecha.rover, fecha.fecha, fecha.sol, fecha.totalFotos, true)
                     }
                 }
             }

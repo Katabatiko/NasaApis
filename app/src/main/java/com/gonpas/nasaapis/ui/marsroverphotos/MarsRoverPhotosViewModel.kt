@@ -153,8 +153,9 @@ class MarsRoverPhotosViewModel(application: Application) : AndroidViewModel(appl
             if (testFecha("${anno.value}-${mes.value}-${dia.value}")) {
                 Log.d(TAG,"evaluando fotos guardadas")
                 evalSavedPhotos()
+                repository.updateTotalFotos("${anno.value}-${mes.value}-${dia.value}", _photos.value!!.size)
             }else{
-                repository.insertFechaVista(rover.value!!, fecha!!, photos.value!!.get(0).sol, true)
+                repository.insertFechaVista(rover.value!!, fecha!!, photos.value!!.get(0).sol, _photos.value!!.size, true)
             }
         }catch (ce: CancellationException) {
             throw ce    // NECESARIO PARA CANCELAR EL SCOPE DE LA RUTINA
@@ -227,13 +228,17 @@ class MarsRoverPhotosViewModel(application: Application) : AndroidViewModel(appl
                 if (testFecha("${anno.value}-${mes.value}-${dia.value}")) {
                     Log.d(TAG,"evaluando fotos guardadas")
                     evalSavedPhotos()
+                    repository.updateTotalFotos("${anno.value}-${mes.value}-${dia.value}", _photos.value!!.size)
                 }else{
                     Log.d(TAG,"testFecha false: ${anno.value}-${mes.value}-${dia.value}")
-                    repository.insertFechaVista(rover.value!!, "${anno.value}-${mes.value}-${dia.value}",fotos.photos.get(0).sol, true )
+                    repository.insertFechaVista(rover.value!!, "${anno.value}-${mes.value}-${dia.value}",fotos.photos.get(0).sol, _photos.value!!.size, true )
                 }
-            }
-            else {
-                repository.insertFechaVista(rover.value!!, "${anno.value}-${mes.value}-${dia.value}",null, false )
+            } else {
+                if (testFecha("${anno.value}-${mes.value}-${dia.value}")) {
+                    repository.updateTotalFotos("${anno.value}-${mes.value}-${dia.value}", 0)
+                } else {
+                    repository.insertFechaVista(rover.value!!, "${anno.value}-${mes.value}-${dia.value}",null, 0, false )
+                }
                 Toast.makeText(getApplication(), "Fecha no disponible", Toast.LENGTH_LONG).show()
             }
         }catch (ce: CancellationException) {

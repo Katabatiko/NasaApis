@@ -5,6 +5,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Update
 
 @Dao
 interface NasaDao {
@@ -50,9 +51,13 @@ interface NasaDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertFechaVista(fechaVista: FechaVista)
 
+    @Query("update FechaVista set totalFotos = :numFotos where fecha=:fecha")
+    suspend fun updateTotalFotos(fecha: String, numFotos: Int)
+
     @Query("select * from FechaVista group by rover order by fecha desc")
     fun getAllFechas(): LiveData<List<FechaVista>>
 
     @Query("select * from FechaVista where rover = :key order by fecha desc")
     fun getFechasByRover(key: String): LiveData<List<FechaVista>>
+
 }

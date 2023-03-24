@@ -21,9 +21,9 @@
             android:layout_height="wrap_content"
             android:layout_margin="6dp"
             android:paddingStart="6dp"
-            android:textAppearance="@style/TextAppearance.Subtitle"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             app:dateFormat="@{ fechaVista.fecha }"
-            app:setTextColor= "@{ fechaVista.disponible }"
+            app:setTextColor="@{ fechaVista.disponible }"
             tools:text="22/12/2022" />
         <!--
             android:textColor="@{ fechaVista.disponible ? '@color/primaryTextColor' : '@color/secondaryTextColor'  }" -->
@@ -32,16 +32,43 @@
             android:id="@+id/textView24"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="6dp"
-            android:text="-->   Sol: "
-            android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+            android:layout_marginStart="6dp"
+            android:layout_marginTop="6dp"
+            android:layout_marginBottom="6dp"
+            android:text="->   Sol: "
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
         <TextView
             android:id="@+id/fecha_sol"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="6dp"
-            android:textAppearance="@style/TextAppearance.AppCompat.Large"
-            android:text="@{ fechaVista.sol.toString() }"/>
+            android:layout_marginTop="6dp"
+            android:layout_marginBottom="6dp"
+            android:text="@{ fechaVista.sol.toString() }"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            tools:text="9.999" />
+
+        <TextView
+            android:id="@+id/textView29"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="6dp"
+            android:layout_marginTop="6dp"
+            android:layout_marginBottom="6dp"
+            android:text="- Fotos:"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
+        <TextView
+            android:id="@+id/textView30"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="6dp"
+            android:layout_marginEnd="6dp"
+            android:layout_marginBottom="6dp"
+            android:layout_weight="1"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:text="@{ fechaVista.totalFotos == null ? `?` : fechaVista.totalFotos.toString() }"
+            tools:text='¿?' />
     </LinearLayout>
 </layout>

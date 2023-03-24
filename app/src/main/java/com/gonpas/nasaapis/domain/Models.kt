@@ -79,6 +79,7 @@ data class DomainFechaVista(
     val rover: String,
     val fecha: String,       // aaaa-MM-dd
     val sol: Int?,
+    val totalFotos: Int?,
     val disponible: Boolean
 ): Parcelable
 

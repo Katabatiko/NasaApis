@@ -234,6 +234,9 @@ class MarsRoverPhotosFragment : Fragment() {
 //                notifyItemChanged(position)   ¡¡¡¡ DA ERROR POR INTENTAR EJECUTAR EL METODO ...ViewGroup.getParect() EN OBJETO NULL !!!!
 //                notifyItemChanged(holder.absoluteAdapterPosition)     ¡¡¡¡ MISMO ERROR !!!!
             }
+            val pos =   if(position < 10)   String.format("0%s", (position +1).toString())
+                        else                (position +1).toString()
+            holder.binding.posicion.text = String.format("%s.-", pos)
             holder.binding.executePendingBindings()
         }
 
