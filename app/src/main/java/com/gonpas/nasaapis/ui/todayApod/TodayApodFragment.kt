@@ -36,7 +36,7 @@ class TodayApodFragment : Fragment() {
         binding.lifecycleOwner = this
 
         apod = TodayApodFragmentArgs.fromBundle(requireArguments()).apod
-        Log.d(TAG, "recibido apod de fecha ${apod.date}")
+//        Log.d(TAG, "recibido apod de fecha ${apod.date}")
         binding.domainApod = apod
 
         val viewMoelFactory = TodayApodViewModelFactory(apod, app)

@@ -38,7 +38,7 @@ class MarsRoverPhotosFragment : Fragment() {
     val viewModel: MarsRoverPhotosViewModel by lazy {
         val application = requireNotNull(activity).application
         val viewModelFactory = MarsRoverPhotosViewModelFactory(application)
-        ViewModelProvider(requireActivity(), viewModelFactory).get(MarsRoverPhotosViewModel::class.java)
+        ViewModelProvider(requireActivity(), viewModelFactory)[MarsRoverPhotosViewModel::class.java]
     }
 
     override fun onCreateView(
@@ -122,16 +122,11 @@ class MarsRoverPhotosFragment : Fragment() {
 //            Log.d(TAG,"photos changed")
             if (fotos != null){
                 if (fotos.isNotEmpty()) {
-                    adapter.let {
-//                        it.datos = fotos
-//                        it.notifyDataSetChanged()
-                        it.submitList(fotos)
-                    }
-                    val template = "Fotos: %s"
-                    totalFotos.text = String.format(template, fotos.size)
+                    adapter.submitList(fotos)
+                    totalFotos.text = String.format(getString(R.string.fotos_count), fotos.size)
                 }else{
-                    totalFotos.text = "Fotos:"
-                    Toast.makeText(context, "Fecha fuera de rango", Toast.LENGTH_LONG).show()
+                    totalFotos.text = getString(R.string.fotos)
+                    Toast.makeText(context, getText(R.string.out_range_date), Toast.LENGTH_LONG).show()
                 }
             }
         }
@@ -155,16 +150,16 @@ class MarsRoverPhotosFragment : Fragment() {
 
 
         viewModel._fechasPerseverance.observe(viewLifecycleOwner){
-            Log.d(TAG, "fechas PERSEVERANCE: $it")
+//            Log.d(TAG, "fechas PERSEVERANCE: $it")
         }
         viewModel._fechasCuriosity.observe(viewLifecycleOwner){
-            Log.d(TAG, "fechas CURIOSITY: $it")
+//            Log.d(TAG, "fechas CURIOSITY: $it")
         }
         viewModel._fechasOpportunity.observe(viewLifecycleOwner){
-            Log.d(TAG, "fechas OPPORTUNITY: $it")
+//            Log.d(TAG, "fechas OPPORTUNITY: $it")
         }
         viewModel._fechasSpirit.observe(viewLifecycleOwner){
-            Log.d(TAG, "fechas SPIRIT: $it")
+//            Log.d(TAG, "fechas SPIRIT: $it")
         }
 
         viewModel.showAlertDialog.observe(viewLifecycleOwner){
@@ -218,8 +213,6 @@ class MarsRoverPhotosFragment : Fragment() {
     }
 
     class MarsFotosAdapter(val clickListener: FotoSaveListener) : ListAdapter<DomainMarsPhoto, MarsFotosAdapter.FotoViewHolder>(MarsPhotosDiffCallback) {
-        /*var datos = listOf<DomainMarsPhoto>()
-            set(value) { field = value  }*/
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FotoViewHolder {
             return FotoViewHolder.from(parent)
@@ -231,8 +224,6 @@ class MarsRoverPhotosFragment : Fragment() {
             holder.binding.saveBtn.setOnClickListener {
                 clickListener.onClick(item)
                 it.visibility = View.INVISIBLE
-//                notifyItemChanged(position)   ¡¡¡¡ DA ERROR POR INTENTAR EJECUTAR EL METODO ...ViewGroup.getParect() EN OBJETO NULL !!!!
-//                notifyItemChanged(holder.absoluteAdapterPosition)     ¡¡¡¡ MISMO ERROR !!!!
             }
             val pos =   if(position < 10)   String.format("0%s", (position +1).toString())
                         else                (position +1).toString()
@@ -240,7 +231,6 @@ class MarsRoverPhotosFragment : Fragment() {
             holder.binding.executePendingBindings()
         }
 
-//        override fun getItemCount(): Int = datos.size
 
         class FotoViewHolder(val binding: MarsFotoItemBinding) : RecyclerView.ViewHolder(binding.root){
             companion object{
@@ -259,7 +249,6 @@ class MarsRoverPhotosFragment : Fragment() {
             ): Boolean {
 //                Log.d(TAG,"areItemsTheSame")
                 return oldItem === newItem
-//                return oldItem.marsPhotoId == newItem.marsPhotoId
             }
 
             override fun areContentsTheSame(
@@ -268,7 +257,6 @@ class MarsRoverPhotosFragment : Fragment() {
             ): Boolean {
                 Log.d(TAG,"areContentsTheSame")
                 return oldItem.marsPhotoId == newItem.marsPhotoId && oldItem.saved == newItem.saved
-//                return oldItem == newItem
             }
         }
 

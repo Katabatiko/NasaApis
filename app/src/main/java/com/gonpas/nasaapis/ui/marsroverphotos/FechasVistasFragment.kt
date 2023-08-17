@@ -21,13 +21,13 @@ class FechasVistasFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         val binding = DataBindingUtil.inflate<FragmentListaFechasMarteBinding>(inflater, R.layout.fragment_lista_fechas_marte, container, false)
 
         binding.lifecycleOwner = this
 
         val datos: List<DomainFechaVista> = FechasVistasFragmentArgs.fromBundle(requireArguments()).listaFechas.asList()
-        Log.d(TAG,"lista fechas: $datos")
+//        Log.d(TAG,"lista fechas: $datos")
 
         binding.rover = FechasVistasFragmentArgs.fromBundle(requireArguments()).rover
 

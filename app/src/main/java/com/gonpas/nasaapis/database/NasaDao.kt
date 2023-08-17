@@ -18,6 +18,9 @@ interface NasaDao {
     @Query("select * from ApodDb order by date desc")
     fun getAllApods(): LiveData<List<ApodDb>>
 
+    @Query("select * from ApodDb order by date desc")
+    suspend fun getApodsAsync(): List<ApodDb>
+
     @Query("select * from ApodDb order by date desc limit 1")
     suspend fun getLastApod(): ApodDb
 
@@ -34,13 +37,16 @@ interface NasaDao {
      * Mars photos
      */
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insertMarsPhoto(marsPhoto: MarsPhotoDb)
+    fun insertMarsPhoto(marsPhoto: MarsPhotoDb): Long
 
     @Query("delete from MarsPhotoDb where marsPhotoId = :key")
     suspend fun removeMarsPhoto(key: Int)
 
     @Query("select * from MarsPhotoDb order by earthDate desc")
     fun getAllMarsPhotos(): LiveData<List<MarsPhotoDb>>
+
+    @Query("select * from MarsPhotoDb order by earthDate desc")
+    suspend fun getMarsPhotosAsync(): List<MarsPhotoDb>
 
     @Query("select marsPhotoId from MarsPhotoDb")
     fun getAllMarsPhotoId(): LiveData<List<Int>>
@@ -49,7 +55,7 @@ interface NasaDao {
      * Mars fotos fechas visitadas
      */
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insertFechaVista(fechaVista: FechaVista)
+    suspend fun insertFechaVista(fechaVista: FechaVista): Long
 
     @Query("update FechaVista set totalFotos = :numFotos where fecha=:fecha")
     suspend fun updateTotalFotos(fecha: String, numFotos: Int)
@@ -57,7 +63,9 @@ interface NasaDao {
     @Query("select * from FechaVista group by rover order by fecha desc")
     fun getAllFechas(): LiveData<List<FechaVista>>
 
+    @Query("select * from FechaVista order by fecha desc")   // select * from FechaVista  group by rover
+    suspend fun getFechasAsync(): List<FechaVista>
+
     @Query("select * from FechaVista where rover = :key order by fecha desc")
     fun getFechasByRover(key: String): LiveData<List<FechaVista>>
-
 }

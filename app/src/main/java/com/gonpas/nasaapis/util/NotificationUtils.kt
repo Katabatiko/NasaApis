@@ -23,13 +23,7 @@ private val FLAGS = 0
  */
 fun NotificationManager.sendNotification(messageBody: String, applicationContext: Context, todayApod: DomainApod) {
 
-//    val contentIntent = Intent(applicationContext, MainActivity::class.java)
-    /*val contentPendingIntent = PendingIntent.getActivity(
-        applicationContext,
-        NOTIFICATION_ID,
-        contentIntent,
-        PendingIntent.FLAG_UPDATE_CURRENT
-    )*/
+
 
     val contentPendingIntent = NavDeepLinkBuilder(applicationContext)
         .setGraph(R.navigation.navigation)

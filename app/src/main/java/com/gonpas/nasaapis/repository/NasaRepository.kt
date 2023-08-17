@@ -20,9 +20,10 @@ class NasaRepository(private val database: NasaDatabase) {
     /** APOD */
 
     fun getApodsFromDb(): LiveData<List<ApodDb>> {
-        //  Log.d(TAG, "Solicitando todos los apods")
-        //        Log.d(TAG,"Total apods recibidos: ${apods.value?.size ?: 0}")
         return database.nasaDao.getAllApods()
+    }
+    suspend fun getApodsAsync(): List<ApodDb> {
+        return database.nasaDao.getApodsAsync()
     }
 
     /**
@@ -162,15 +163,21 @@ class NasaRepository(private val database: NasaDatabase) {
         return roverManifest
     }
 
-    suspend fun saveMarsPhoto(foto: MarsPhotoDb){
+    suspend fun saveMarsPhoto(foto: MarsPhotoDb): Long{
 //        Log.d(TAG,"guardando foto en db")
+        val rowId: Long
         withContext(Dispatchers.IO) {
-            database.nasaDao.insertMarsPhoto(foto)
+            rowId = database.nasaDao.insertMarsPhoto(foto)
         }
+        return rowId
     }
 
     fun getMarsPhotosFromDb(): LiveData<List<MarsPhotoDb>>{
         return database.nasaDao.getAllMarsPhotos()
+    }
+
+    suspend fun getMarsPhotosAsync(): List<MarsPhotoDb> {
+        return database.nasaDao.getMarsPhotosAsync()
     }
 
     fun getAllMarsPhotosIdsFromDb(): LiveData<List<Int>>{
@@ -182,15 +189,18 @@ class NasaRepository(private val database: NasaDatabase) {
             database.nasaDao.removeMarsPhoto(id)
         }
     }
+
     /******************************************************************************************************/
     /******************************************************************************************************/
     /** MARS FECHAS VISTAS */
 
-    suspend fun insertFechaVista(rover: String, fecha: String, sol: Int?, totalFotos: Int?, disponible: Boolean){
+    suspend fun insertFechaVista(rover: String, fecha: String, sol: Int?, totalFotos: Int?, disponible: Boolean): Long{
         val fechaVista = FechaVista(rover, fecha, sol, totalFotos, disponible)
+        val rowId: Long
         withContext(Dispatchers.IO){
-            database.nasaDao.insertFechaVista(fechaVista)
+            rowId = database.nasaDao.insertFechaVista(fechaVista)
         }
+        return rowId
     }
 
     suspend fun updateTotalFotos(fecha: String, numFotos: Int){
@@ -201,6 +211,10 @@ class NasaRepository(private val database: NasaDatabase) {
 
     fun getAllMarsFechas(): LiveData<List<FechaVista>> {
         return database.nasaDao.getAllFechas()
+    }
+
+    suspend fun getFechasAsync(): List<FechaVista> {
+        return database.nasaDao.getFechasAsync()
     }
 
     fun getFechasByRover(rover: String): LiveData<List<DomainFechaVista>> {

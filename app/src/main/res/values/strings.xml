@@ -5,6 +5,10 @@
     <string name="apod_notification_channel_name">Apod</string>
     <string name="autodescarga">Descargada Apod del día %s</string>
 
+    <string name="info">Información</string>
+    <string name="explicacion_permiso">¿Deseas que Nasa Apis te notifique cuando se reciba la Images Astronómica del Día?</string>
+    <string name="denied_permiso">Permiso denegado, no serás notificado. En cualquier momento puedes conceder el permiso desde Ajustes > Aplicaciones</string>
+
     <string name="mas">Más</string>
     <string name="automatico">Automático</string>
     <string name="continuar">Continuar</string>
@@ -29,12 +33,25 @@
     <string name="dummy_content">DUMMY\nCONTENT</string>
     <string name="no_network">No hay acceso a Internet</string>
     <string name="descarga_aleatoira">Descarga aleatoira</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="imgs_marte">Imágenes de Marte</string>
-    <string name="imgs_tierra">Imágenes de la Tierra</string>
+    <string name="out_range_date">Fecha fuera de rango</string>
+
     <string name="backup">Respaldo de datos</string>
-    <string name="restore">Restablecer datos</string>
+    <string name="restore">Recuperar datos</string>
+    <string name="respaldo">Respaldo</string>
     <string name="datos_almacenados">Datos almacenados</string>
+    <string name="error_restore">El archivo no es válido: </string>
+    <string name="restore_dialog_msg">¿Restaurar datos de vehículos desde archivo?</string>
+    <string name="saved_cars">%d vehículos guardados</string>
+    <string name="restored_cars">%d vehículos recuperados</string>
+    <string name="saving_error">Hubo un error y no se pudo guardar los datos: </string>
+    <string name="retrieving_error">No se pudo preparar los datos.</string>
+    <string name="restoreInfo">Rescuperados %d Apods, %d fotos de Marte y %d fechas visitadas</string>
+    <string name="backupInfo">Guardados %d Apods, %d fotos de Marte y %d fechas visitadas</string>
+
+    <string name="imgs_marte">Imágenes de Marte</string>
+    <string name="fotos">Fotos: </string>
+    <string name="fotos_count">Fotos: %s</string>
+    <string name="imgs_tierra">Imágenes de la Tierra</string>
     <string name="boton_play">Botón play</string>
     <string name="enhanced">Mejorada</string>
     <string name="animacion">Animación</string>

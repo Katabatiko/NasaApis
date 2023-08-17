@@ -1,18 +1,22 @@
 package com.gonpas.nasaapis
 
+import android.Manifest
+import android.app.AlertDialog
 import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Environment
-import android.provider.DocumentsContract
-import android.provider.OpenableColumns
 import android.util.Log
 import android.view.MenuItem
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.databinding.DataBindingUtil
@@ -34,24 +38,34 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
 
-    private const val TAG = "xxMa"
-    private const val CREATE_FILE_APODS =1
-    private const val CREATE_FILE_MARS_FOTOS =2
-    private const val CREATE_FILE_MARS_FECHAS =3
-    private const val PICK_DB_FILE = 7
-//    private const val OPEN_DOWNLOAD_DIR = 0
+private const val TAG = "xxMa"
+
+    private const val FILE_NAME = "NasaApisBackup.json"
+    private const val MIME_TYPE = "application/json"
+    private const val NOTIFICATION_PERMISSION_REQUEST = 2
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
     private lateinit var drawerLayout: DrawerLayout
     private val applicationScope = CoroutineScope(Dispatchers.Default)
-//    private val backupScope = CoroutineScope(Dispatchers.IO)
+    private lateinit var preferences: SharedPreferences
 
 
     val viewModel: MainActivityViewModel by lazy {
-        Log.d(TAG,"Instanciando mainactivity viewmodel")
         val viewModelFactory = MainActivityViewModelFactory(this.application)
-        ViewModelProvider(this, viewModelFactory).get(MainActivityViewModel::class.java)
+        ViewModelProvider(this, viewModelFactory)[MainActivityViewModel::class.java]
+    }
+
+    private val createBackupFile = registerForActivityResult(CreateFileContract()) { uri ->
+        if (uri != null) {
+            createFile(uri)
+        }
+    }
+
+    private val retrieveBackupFile = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+        if (uri != null){
+            openFile(uri)
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -71,8 +85,18 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         NavigationUI.setupWithNavController(binding.navView, navController)
         navView.setNavigationItemSelectedListener(this)
 
+        preferences = getSharedPreferences("preferences", Context.MODE_PRIVATE)
+        val firstTime = preferences.getBoolean("firstTime", true)
 
-        delayedInit()
+        delayedInit(firstTime)
+//        if (firstTime){
+//            val requestPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()){ isGranted ->
+//                if (!isGranted) {
+//                    Toast.makeText(this, getText(R.string.info_permiso), Toast.LENGTH_LONG).show()
+//                }
+//            }
+//
+//        }
         //fijar el modo noche como el actual
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
     }
@@ -82,69 +106,66 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         return NavigationUI.navigateUp(navController, drawerLayout)
     }
 
-    private fun delayedInit(){
-        applicationScope.launch {
-            setupRecurringWork()
+    private fun isNotificationGranted(): Boolean {
+        if (Build.VERSION.SDK_INT < 33)     return true
+        else {
+           if ( ContextCompat.checkSelfPermission(
+                   this,
+                   Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
+               return true
+           } else {
+               if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.POST_NOTIFICATIONS)){
+                   Log.d(TAG,"requiere explicacion")
+
+                   val builder = AlertDialog.Builder(this)
+                   builder.setMessage(R.string.explicacion_permiso)
+                       .setTitle(R.string.info)
+                   builder.setPositiveButton(
+                       android.R.string.ok
+                   ) { _, _ ->
+                       ActivityCompat.requestPermissions(
+                           this,
+                           arrayOf(Manifest.permission.POST_NOTIFICATIONS),
+                           NOTIFICATION_PERMISSION_REQUEST
+                       )
+                   }
+                   builder.setNegativeButton(
+                       android.R.string.cancel
+                   ) { _, _ -> // User cancelled the dialog
+                       Toast.makeText(
+                           applicationContext,
+                           getText(R.string.denied_permiso),
+                           Toast.LENGTH_LONG
+                       ).show()
+                   }
+                   val dialog = builder.create()
+                   dialog.show()
+               } else {
+                   Log.d(TAG,"NO requiere explicacion")
+                   // No explanation needed, we can request the permission.
+                   ActivityCompat.requestPermissions(
+                       this,
+                       arrayOf(Manifest.permission.POST_NOTIFICATIONS),
+                       NOTIFICATION_PERMISSION_REQUEST
+                   )
+               }
+           }
         }
+        return false
     }
 
-    @Deprecated("Deprecated in Java")
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-//        Log.d(TAG, "data.data: ${data?.data}")
-
-        val contentResolver = applicationContext.contentResolver
-        val takeFlags: Int = Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
-
-        if (resultCode == RESULT_OK) {
-            when (requestCode) {
-                CREATE_FILE_APODS -> {
-                    data?.data?.also { uri ->
-                        Log.d(TAG,"uri: $uri")
-                        contentResolver.takePersistableUriPermission(uri, takeFlags)
-
-                        Log.d(TAG, "copiando archivo NasaApodsBackup.json")
-                        val jsonString = viewModel.dataToJson(viewModel.apods.value as List<Any>, "ApodDb")
-                        viewModel.editFile(uri, jsonString)
-                    }
-                }
-
-                CREATE_FILE_MARS_FOTOS -> {
-                    data?.data?.also { uri ->
-                        contentResolver.takePersistableUriPermission(uri, takeFlags)
-
-                        Log.d(TAG, "copiando archivo NasaMarsFotosBackup.json")
-                        val jsonString = viewModel.dataToJson(viewModel.marsFotos.value as List<Any>, "MarsPhotoDb")
-                        viewModel.editFile(uri, jsonString)
-                    }
-                }
-
-                CREATE_FILE_MARS_FECHAS -> {
-                    data?.data?.also { uri ->
-                        contentResolver.takePersistableUriPermission(uri, takeFlags)
-
-                        Log.d(TAG, "copiando archivo NasaMarsFechasBackup.json")
-                        val jsonString = viewModel.dataToJson(viewModel.fechasMarte.value as List<Any>,"FechaVista")
-                        viewModel.editFile(uri, jsonString)
-                    }
-                }
-
-                PICK_DB_FILE -> {
-                    data?.data?.also { uri ->
-                        val filename = getFileNameFromUri(this, uri)
-                        Log.d(TAG,"filename: $filename")
-                        Log.d(TAG,"data: $data")
-//                        Log.d(TAG,"filename: ${uri.lastPathSegment}")
-//                        val path = uri.path?.split("/")
-//                        Log.d(TAG, "Path: ${ path.toString() }")
-//                        val name = path?.get(path.size -1)
-//                        Log.d(TAG, name?: "nulo")
-                        viewModel.rebuildData(uri)
-                    }
-                }
+    private fun delayedInit(firstTime: Boolean){
+        if (firstTime){
+            Log.d(TAG,"firstTime")
+            with(preferences.edit()){
+                putBoolean("firstTime", false)
+                apply()
             }
-        }else{
-            Log.e(TAG, "result code no OK: $resultCode")
+            val isGranted = isNotificationGranted()
+            Log.d(TAG,"is notification granted = $isGranted")
+        }
+        applicationScope.launch {
+            setupRecurringWork()
         }
     }
 
@@ -154,11 +175,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             .setRequiredNetworkType(NetworkType.UNMETERED)
             .setRequiresBatteryNotLow(true)
             .setRequiresStorageNotLow(true)
-            /*.apply {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
-                    setRequiresDeviceIdle(true)
-                }
-            }*/
             .build()
 
         val repeatingRequest = PeriodicWorkRequestBuilder<RefreshDataWorker>(1, TimeUnit.DAYS)
@@ -173,64 +189,27 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             ExistingPeriodicWorkPolicy.REPLACE,
             repeatingRequest
         )
-        /*workManager.enqueue(oneRequest)
-        workManager.getWorkInfoByIdLiveData(repeatingRequest.id)  //  NO SE PUEDE OBSERVAR EN UN HILO DE BACKGROUND
-            .observe(this) {
-                if (it.state == WorkInfo.State.ENQUEUED) {
-                    // Show the work state in text view
-                    Log.d(TAG,"Done")
-                } else if (it.state == WorkInfo.State.ENQUEUED) {
-                    Log.d(TAG,"Cancelada")
-                } else  {
-                    Log.d(TAG,"en proceso???")
-                }
-                Log.d(TAG, it.toString())
-            }*/
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         val navController = this.findNavController(R.id.nav_host_fragment)
         when(item.itemId){
             R.id.restore -> {
-                val documentFolder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).absolutePath
-                val uri = Uri.parse(documentFolder)
-                val jsonArray = openFile(uri)
-
-//
-//                Toast.makeText(this, "Datos recuperados", Toast.LENGTH_LONG).show()
-//                val externalStorageVolumes: Array<out File> = ContextCompat.getExternalFilesDirs(applicationContext, null)
-//                for (item in externalStorageVolumes)    Log.d(TAG, item.absolutePath)
-              //  Log.d(TAG,"permiso manage external storage: ${Environment.isExternalStorageManager()}")
-
-
-                Log.d(TAG, "Clickado Restore")
+                retrieveBackupFile.launch(MIME_TYPE)
             }
+
             R.id.backup  -> {
-                Log.d(TAG, "Clickado Backup")
-              //  openDirectory()
                 viewModel.obtenerDatos()
-                val documentFolder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).absolutePath
-//                Log.d(TAG, "documentFolder: ${Uri.parse(documentFolder)}")
-//                Log.d(TAG,"estado storage: ${Environment.getExternalStorageState()}")
 
-                viewModel.apods.observerOnce(this) {
-                    Log.d(TAG, "Recibidos apods")
-                    createFile(Uri.parse(documentFolder), "NasaApodsBackup.json")
+                viewModel.datosBackupRecibidos.observeUntilTrue(this) {
+                    if (it){
+//                        Log.d(TAG,"datos recibidos")
+                        viewModel.datosBackupRecibidos.value = false
+                        createBackupFile.launch(MIME_TYPE)
+                    }
                 }
-
-                viewModel.marsFotos.observerOnce(this){
-                    createFile(Uri.parse(documentFolder), "NasaMarsFotosBackup.json")
-                    Log.d(TAG, "Recibidas fotos de marte")
-                }
-
-                viewModel.fechasMarte.observerOnce(this){
-                    createFile(Uri.parse(documentFolder), "NasaMarsFechasBackup.json")
-                    Log.d(TAG, "Recibidas fechas vistas de marte")
-                }
-
-//                Toast.makeText(this, "Datos guardados en $documentFolder", Toast.LENGTH_LONG).show()
-
             }
+
             R.id.apodsFragment -> {
                 val notificationManager =ContextCompat.getSystemService(
                     this,
@@ -247,59 +226,42 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         return true
     }
 
-    // extensión para la auto eliminacion del observador despues de una observación
-    private fun <T> LiveData<T>.observerOnce(lifecycleOwner: LifecycleOwner, observer: Observer<T>) {
-        observe(lifecycleOwner, object: Observer<T>{
-            override fun onChanged(t: T) {
+    // extensión para la auto eliminacion del observador despues de observar true
+    private fun LiveData<Boolean>.observeUntilTrue(lifecycleOwner: LifecycleOwner, observer: Observer<Boolean>) {
+        observe(lifecycleOwner, object: Observer<Boolean>{
+            override fun onChanged(t: Boolean) {
                 observer.onChanged(t)
-                removeObserver(this)
+                if (t)                removeObserver(this)
             }
-
         })
     }
 
-    private fun createFile(pickerInitialUri: Uri, title: String){
-//        Log.d(TAG,"createFile pickerInitialUri: $pickerInitialUri")
-        val intent = Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
-            addCategory(Intent.CATEGORY_OPENABLE)
-            type = "application/json"
-
-            putExtra(Intent.EXTRA_TITLE, title)
-
-            // opcionalmente se puede especificar la URI del directorio inicial que abre el file picker
-            // antes de crear el archivo. Para Api level >=26
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
-                putExtra(DocumentsContract.EXTRA_INITIAL_URI, pickerInitialUri)
-            }
-
-        }
-        when(title){
-            "NasaApodsBackup.json" -> startActivityForResult(intent, CREATE_FILE_APODS)
-            "NasaMarsFotosBackup.json" -> startActivityForResult(intent, CREATE_FILE_MARS_FOTOS)
-            "NasaMarsFechasBackup.json" -> startActivityForResult(intent, CREATE_FILE_MARS_FECHAS)
-        }
-    }
-
-    private fun openFile(pickerInitialUri: Uri){
-        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
-            addCategory(Intent.CATEGORY_OPENABLE)
-            type = "application/json"
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
-                putExtra(DocumentsContract.EXTRA_INITIAL_URI, pickerInitialUri)
+    private fun createFile(uri: Uri) {
+        viewModel.editFile(uri)
+        viewModel.showBackupInfo.observe(this){
+            if (it) {
+                val msg = resources.getString(R.string.backupInfo).format(viewModel.apodsCount, viewModel.marsPhotosCount, viewModel.fechasVistasCount)
+                Toast.makeText(this, msg, Toast.LENGTH_LONG).show()
+                viewModel.resetCountData()
             }
         }
-        startActivityForResult(intent, PICK_DB_FILE)
     }
+    private fun openFile(uri: Uri) {
+        viewModel.rebuildData(uri)
+        viewModel.showRestoreInfo.observe(this) {
+            if (it) {
+                val msg = resources.getString(R.string.restoreInfo).format(viewModel.apodsCount, viewModel.marsPhotosCount, viewModel.fechasVistasCount)
+                Toast.makeText(this, msg, Toast.LENGTH_LONG).show()
+                viewModel.resetCountData()
+            }
+        }
+    }
+}
 
-    private fun getFileNameFromUri(context: Context, uri: Uri): String? {
-        val fileName: String?
-        val cursor = context.contentResolver.query(uri, null, null, null, null)
-        cursor?.moveToFirst()
-        var indice = cursor?.getColumnIndex(OpenableColumns.DISPLAY_NAME)
-        if(indice == -1) indice = 0
-        fileName = cursor?.getString(indice!!)
-        cursor?.close()
-        return fileName
+class CreateFileContract: ActivityResultContracts.CreateDocument(MIME_TYPE) {
+    override fun createIntent(context: Context, input: String): Intent {
+        val intent = super.createIntent(context, input)
+        intent.putExtra(Intent.EXTRA_TITLE, FILE_NAME)
+        return intent
     }
 }

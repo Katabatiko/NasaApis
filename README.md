@@ -15,8 +15,7 @@ Esta aplicación accede a diversas APIs de la Nasa:
         concreta, se descargará las últimas recibidas. Éstas imágenes se pueden guardar en una base de datos del dispositivo. También se lleva un registro de las fechas vistas
         (por si se desea ir viendo pero no repetirse). También se puede acceder a los manifiestos de los rover con diversa información e imágenes de los mismos.
 
-    Todos los datos almacenados en la base de datos alojada en el dispositivo se puede volcar a unos archivos .json (uno para los apods, otro para las fotos de Marte, y un 
-    tercero para las fechas visitadas), para permitir su traslado a otros dispositivos.
+    Todos los datos almacenados en la base de datos alojada en el dispositivo se puede volcar a un archivo .json, para permitir su traslado a otros dispositivos.
 
     Todas las imágenes se alojan en marcos que con un toque (tap) se pasan a un contenedor con capacidad de zoom y scroll. Es la biblioteca ZoomableImageView desarrollada por
     Ravi Koradiya disponible en Github bajo licencia Apache.

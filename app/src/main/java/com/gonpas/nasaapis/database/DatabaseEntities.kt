@@ -77,8 +77,8 @@ data class MarsPhotoDb constructor(
 }
 
 fun LiveData<List<MarsPhotoDb>>.asListDomainMarsPhotos(): LiveData<List<DomainMarsPhoto>>{
-    return map(this){
-        it.map {
+    return map(this){ lista ->
+        lista.map {
             DomainMarsPhoto(
                 marsPhotoId = it.marsPhotoId,
                 sol = it.sol,
