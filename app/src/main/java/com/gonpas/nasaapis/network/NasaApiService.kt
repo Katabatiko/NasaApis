@@ -36,24 +36,12 @@ private const val NAVCAM = "navcam"
 private const val PANCAM = "pancam"
 
 
-val lon_navarrevisca = -4.89222
-val lat_navarrevisca = 40.36246
-
-val lon_hoyocasero = -4.97696
-val lat_hoyocasero = 40.39798
-
 // creación del objeto moshi con el adapter para kotlin
 private val moshi = Moshi.Builder()
     .add(KotlinJsonAdapterFactory())
     .build()
 
-/*private val moshiEpic = Moshi.Builder()
-    .add(KotlinJsonAdapterFactory())
-    .add(EpicAdapter())
-    .build()*/
-
 // objeto retrofit, que necesita la uri del web service, y un converter factory.
-// El convertidor le dice a retrofit que hacer con los datos que recibe
 private val retrofitApod: Retrofit by lazy{
     Retrofit.Builder()
     .addConverterFactory(MoshiConverterFactory.create(moshi))
@@ -79,9 +67,7 @@ private val retrofitMarsRovers: Retrofit by lazy {
 // la interface define como comunicarse con el web service
 interface NasaApiService {
 
-    /** APOD: Astronomy Picture of the Day
-    * entre paréntesis se pone el endpoint que se añadirá al BASE_URL
-    */
+    // APOD: Astronomy Picture of the Day
     @GET("apod")
     suspend fun getApod(@Query("api_key") api_key: String = API_KEY, @Query("thumbs") thumbs: Boolean = true): ApodDto
 
@@ -91,18 +77,14 @@ interface NasaApiService {
     @GET("apod")
     suspend fun getRandomApods(@Query("count") count: Int = 5, @Query("thumbs") thumbs: Boolean = true, @Query("api_key") api_key: String = API_KEY): List<ApodDto>
 
-    /**
-     * EPIC: Earth Polychromatic Imaging Camera
-      */
+    // EPIC: Earth Polychromatic Imaging Camera
     @GET("{collection}")
     suspend fun getLastsEpic(@Path("collection") collection: String, @Query("api_key") api_key: String = API_KEY): List<EpicDTO>
 
     @GET("{collection}/date/{date}")
     suspend fun getEpicsByDate(@Path("collection") collection: String, @Path("date") date: String, @Query("api_key") api_key: String = API_KEY): List<EpicDTO>
 
-    /**
-     * Pics from Mars
-     */
+    // Pics from Mars
     @GET("rovers/{rover}/photos")
     suspend fun getRoverPhotos(@Path("rover") rover: String = CURIOSITY, @Query("earth_date") earth_date: String, @Query("api_key") api_key: String = API_KEY): Photos
 
