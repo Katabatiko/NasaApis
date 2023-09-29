@@ -1,5 +1,6 @@
 package com.gonpas.nasaapis.network
 
+import com.gonpas.nasaapis.BuildConfig
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import retrofit2.Retrofit
@@ -8,14 +9,14 @@ import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
 
+private const val API_KEY = BuildConfig.apiKey
 // dirección base a la que se añadirán los endpoint
-private const val API_KEY = "DEMO_KEY"
 private const val APOD_BASE_URL = "https://api.nasa.gov/planetary/"
 private const val EPIC_BASE_URL = "https://api.nasa.gov/EPIC/api/"
 private const val MARS_ROVERS_URL = "https://api.nasa.gov/mars-photos/api/v1/"
 
 /**
- * Rovers activos sobre Marte
+ * Rovers sobre Marte
  */
 private const val PERSEVERANCE = "perseverance"
 private const val CURIOSITY = "curiosity"

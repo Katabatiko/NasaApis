@@ -13,7 +13,7 @@ Perseverance (activo), Curiosity (activo), Opportunity (finalizado) o Spirit (fi
 
 <p>Todos los datos almacenados en la base de datos local del dispositivo se puede volcar a un archivo .json, como backup y para permitir su traslado a otros dispositivos.</p>
 
-<p>La aplicación requiere autenticación con una API_KEY para acceder a las APIs que puede tramitarse en en la web api.nasa.gov. Ésta versión cuenta con una DEMO-KEY que permite su exploración, pero para un uso mayor se recomienda una API_KEY propia, a introducir en la constante pertinente del archivo NasaApiService.kt.</p>
+<p>La aplicación requiere autenticación con una API_KEY para acceder a las APIs que puede tramitarse en en la web api.nasa.gov. Para explorar la aplicación, se puede usar como api_key "DEMO-KEY", introduciendo este valor en la constante API_KEY del archivo NasaApiService.kt. En caso de usar una clave propia, en el archivo <i>local.properties</i> reflejar la asignación <i>apiKey="TU_API_KEY"</i></p>
 
 <h2>💻 Realizado con</h2>
 
